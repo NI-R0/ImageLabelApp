@@ -12,7 +12,7 @@ namespace ImageLabelApp
     {
         private static readonly string dbFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "imageLabelApp"
+            "ImageLabelApp"
         );
         private static readonly string dbPath = Path.Combine(dbFolder, "labels.db");
 
@@ -86,6 +86,19 @@ namespace ImageLabelApp
                 }
             }
             return result;
+        }
+        public static bool IsImageLabeled(string imagePath, string label)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                connection.Open();
+                var cmd = new SQLiteCommand("SELECT COUNT(*) FROM Labels WHERE Path = @path AND Label = @label", connection);
+                cmd.Parameters.AddWithValue("@path", imagePath);
+                cmd.Parameters.AddWithValue("@label", label);
+
+                long count = (long)cmd.ExecuteScalar();
+                return count > 0;
+            }
         }
     }
 }

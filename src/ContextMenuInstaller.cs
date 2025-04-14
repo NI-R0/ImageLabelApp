@@ -30,8 +30,14 @@ namespace ImageLabelApp
 
         public static void InstallContextMenu()
         {
+            UninstallContextMenu();
             string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             string keyPath = @"*\shell\Add Label";
+
+            string commandAddFavourites = $"\"{exePath}\" \"%1\" add Favourites";
+            string commandAddMe = $"\"{exePath}\" \"%1\" add Me";
+            string commandRemoveFavourites = $"\"{exePath}\" \"%1\" remove Favourites";
+            string commandRemoveMe = $"\"{exePath}\" \"%1\" remove Me";
 
             using (RegistryKey baseKey = Registry.ClassesRoot.CreateSubKey(keyPath))
             {
@@ -44,7 +50,7 @@ namespace ImageLabelApp
                 favouritesKey.SetValue("MUIVerb", "Favourites");
                 using (RegistryKey commandKey = favouritesKey.CreateSubKey("command"))
                 {
-                    commandKey.SetValue("", $"\"{exePath}\" \"%1\" Favourites");
+                    commandKey.SetValue("", commandAddFavourites);
                 }
             }
 
@@ -53,9 +59,21 @@ namespace ImageLabelApp
                 meKey.SetValue("MUIVerb", "Me");
                 using (RegistryKey commandKey = meKey.CreateSubKey("command"))
                 {
-                    commandKey.SetValue("", $"\"{exePath}\" \"%1\" Me");
+                    commandKey.SetValue("", commandAddMe);
                 }
             }
+
+            string removeKeyPath = @"*\shell\Remove Label";
+            RegistryKey removeBaseKey = Registry.ClassesRoot.CreateSubKey(removeKeyPath);
+            removeBaseKey.SetValue("MUIVerb", "Remove Label");
+            removeBaseKey.SetValue("SubCommands", "");
+
+            // Sub-items
+            var removeFavouritesKey = Registry.ClassesRoot.CreateSubKey($@"{removeKeyPath}\shell\Favourites\command");
+            removeFavouritesKey.SetValue("", commandRemoveFavourites);
+
+            var removeMeKey = Registry.ClassesRoot.CreateSubKey($@"{removeKeyPath}\shell\Me\command");
+            removeMeKey.SetValue("", commandRemoveMe);
         }
 
         public static void InstallRemoveContextMenus()
@@ -73,6 +91,27 @@ namespace ImageLabelApp
                         commandKey.SetValue(null, $"\"{exePath}\" --remove \"%1\" {label}");
                     }
                 }
+            }
+        }
+
+        public static void UninstallContextMenu()
+        {
+            string keyPath = @"*\shell\Add Label";
+            string removeFavouriteKey = @"*\shell\RemoveLabel_Favourites";
+            string removeMeKey = @"*\shell\RemoveLabel_Me"; 
+            string removeLabelKey = @"*\shell\Remove Label";
+
+            try
+            {
+                Registry.ClassesRoot.DeleteSubKeyTree(keyPath, false);
+                Registry.ClassesRoot.DeleteSubKeyTree(removeFavouriteKey, false);
+                Registry.ClassesRoot.DeleteSubKeyTree(removeMeKey, false);
+                Registry.ClassesRoot.DeleteSubKeyTree(removeLabelKey, false);
+                Console.WriteLine("Context menu entries removed successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error removing context menu entries: " + ex.Message);
             }
         }
     }

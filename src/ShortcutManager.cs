@@ -29,7 +29,7 @@ namespace ImageLabelApp
         public static void RemoveShortcut(string imagePath, string label)
         {
             string labelFolder = Path.Combine(baseFolder, label);
-            string shortcutPath = Path.Combine(labelFolder, Path.GetFileNameWithoutExtension(imagePath) + ".lnk");
+            string shortcutPath = Path.Combine(labelFolder, Path.GetFileName(imagePath) + ".lnk");
 
             if (System.IO.File.Exists(shortcutPath))
             {

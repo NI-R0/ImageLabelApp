@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,39 +11,67 @@ namespace ImageLabelApp
     {
         static void Main(string[] args)
         {
-            if (args.Length == 1 && args[0] == "install")
+            if (args.Length == 1)
             {
-                ContextMenuInstaller.InstallContextMenu();
-                ContextMenuInstaller.InstallRemoveContextMenus();
-                Console.WriteLine("Context menu installed!");
-            }
-            else
-            {
-                if (args.Length < 2)
+                switch (args[0].ToLower())
                 {
-                    Console.WriteLine("Usage: ImageLabeler.exe <image-path> <label>");
-                    return;
-                }
+                    case "install":
+                        ContextMenuInstaller.InstallContextMenu();
+                        Console.WriteLine("Context menu installed!");
+                        return;
 
-                if (args.Length == 2)
-                {
-                    string imagePath = args[0];
-                    string label = args[1];
-                    LabelerService.LabelImage(imagePath, label);
-                    return;
-                }
+                    case "uninstall":
+                        ContextMenuInstaller.UninstallContextMenu();
+                        Console.WriteLine("Context menu uninstalled!");
+                        return;
 
-
-                if (args.Length == 3 && args[0] == "--remove")
-                {
-                    string imagePath = args[1];
-                    string label = args[2];
-
-                    LabelDatabase.RemoveLabel(imagePath, label);
-                    Console.WriteLine($"Removed label '{label}' from '{imagePath}'");
-                    return;
+                    default:
+                        Console.WriteLine("Invalid argument. Use 'install' or 'uninstall'.");
+                        return;
                 }
             }
+
+            if (args.Length == 3)
+            {
+                string imagePath = args[0];
+                string command = args[1].ToLower();
+                string label = args[2];
+
+                if (!System.IO.File.Exists(imagePath))
+                {
+                    Console.WriteLine("Image file not found.");
+                    return;
+                }
+
+                switch (command)
+                {
+                    case "add":
+                        LabelerService.LabelImage(imagePath, label);
+                        Console.WriteLine($"Added label '{label}' to '{imagePath}'");
+                        return;
+
+                    case "remove":
+                        if (LabelDatabase.IsImageLabeled(imagePath, label))
+                        {
+                            LabelerService.UnlabelImage(imagePath, label);
+                            Console.WriteLine($"Removed label '{label}' from '{imagePath}'");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"'{imagePath}' is not labeled as '{label}'");
+                        }
+                        return;
+
+                    default:
+                        Console.WriteLine("Invalid command. Use 'add' or 'remove'.");
+                        return;
+                }
+            }
+
+            Console.WriteLine("Usage:");
+            Console.WriteLine("  ImageLabelApp.exe install");
+            Console.WriteLine("  ImageLabelApp.exe uninstall");
+            Console.WriteLine("  ImageLabelApp.exe <image-path> add|remove <label>");
         }
     }
 }
