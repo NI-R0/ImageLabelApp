@@ -1,0 +1,48 @@
+# Build and packaging output
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sdf
+*.cache
+*.csproj.user
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Visual Studio temp files
+.vs/
+.vscode/
+
+# Build results
+*.exe
+*.dll
+*.pdb
+*.app
+*.cache
+*.log
+*.sln.docstates
+
+# Rider IDE
+.idea/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+
+# Others
+*.db
+*.DS_Store
+Thumbs.db
+
+# Optional: Skip Windows shortcut label folders if generated
+# Comment out if you want to track them in Git
+# ImageLabels/
