@@ -118,5 +118,13 @@ namespace ImageLabelApp
                 throw;
             }
         }
+
+        public static void DeleteDatabaseFile()
+        {
+            if (Directory.Exists(dbFolder))
+            {
+                Directory.Delete(dbFolder, true);
+            }
+        }
     }
 }

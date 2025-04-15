@@ -19,5 +19,11 @@ namespace ImageLabelApp
             LabelDatabase.RemoveLabel(imagePath, label);
             ShortcutManager.RemoveShortcut(imagePath, label);
         }
+
+        public static void DeleteApplication()
+        {
+            LabelDatabase.DeleteDatabaseFile();
+            ShortcutManager.RemoveLabelFolders();
+        }
     }
 }

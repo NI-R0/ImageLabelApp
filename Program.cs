@@ -22,6 +22,7 @@ namespace ImageLabelApp
 
                     case "uninstall":
                         ContextMenuInstaller.UninstallContextMenu();
+                        LabelerService.DeleteApplication();
                         Console.WriteLine("Context menu uninstalled!");
                         return;
 

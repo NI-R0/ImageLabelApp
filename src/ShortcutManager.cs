@@ -12,7 +12,7 @@ namespace ImageLabelApp
     {
         private static readonly string baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ImageLabels");
 
-        public static void CreateShortcut(string targetPath, string label)
+        public static void CreateShortcut(string imagePath, string label)
         {
             string labelFolder = Path.Combine(baseFolder, label);
             if (!Directory.Exists(labelFolder))
@@ -20,23 +20,44 @@ namespace ImageLabelApp
                 Directory.CreateDirectory(labelFolder);
             }
 
-            string shortcutName = Path.GetFileName(targetPath) + ".lnk";
-            string shortcutPath = Path.Combine(labelFolder, shortcutName);
+            string destinationPath = Path.Combine(labelFolder, Path.GetFileName(imagePath));
 
-            var shell = new WshShell();
-            IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
-            shortcut.TargetPath = targetPath;
-            shortcut.Save();
+            if (!System.IO.File.Exists(destinationPath))
+            {
+                System.IO.File.Copy(imagePath, destinationPath);
+            }
+
+
+            //string shortcutName = Path.GetFileName(targetPath) + ".lnk";
+            //string shortcutPath = Path.Combine(labelFolder, shortcutName);
+
+            //var shell = new WshShell();
+            //IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
+            //shortcut.TargetPath = targetPath;
+            //shortcut.Save();
         }
 
         public static void RemoveShortcut(string imagePath, string label)
         {
             string labelFolder = Path.Combine(baseFolder, label);
-            string shortcutPath = Path.Combine(labelFolder, Path.GetFileName(imagePath) + ".lnk");
-
-            if (System.IO.File.Exists(shortcutPath))
+            if (!Directory.Exists(labelFolder)) 
             {
-                System.IO.File.Delete(shortcutPath);
+                return; 
+            }
+
+            string copyPath = Path.Combine(labelFolder, Path.GetFileName(imagePath));
+
+            if (System.IO.File.Exists(copyPath))
+            {
+                System.IO.File.Delete(copyPath);
+            }
+        }
+
+        public static void RemoveLabelFolders()
+        {
+            if (Directory.Exists(baseFolder))
+            {
+                Directory.Delete(baseFolder, true);
             }
         }
     }
