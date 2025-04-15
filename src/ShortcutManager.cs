@@ -15,7 +15,10 @@ namespace ImageLabelApp
         public static void CreateShortcut(string targetPath, string label)
         {
             string labelFolder = Path.Combine(baseFolder, label);
-            Directory.CreateDirectory(labelFolder);
+            if (!Directory.Exists(labelFolder))
+            {
+                Directory.CreateDirectory(labelFolder);
+            }
 
             string shortcutName = Path.GetFileName(targetPath) + ".lnk";
             string shortcutPath = Path.Combine(labelFolder, shortcutName);

@@ -40,6 +40,24 @@ namespace ImageLabelApp
 
         public static void AddLabel(string imagePath, string label)
         {
+            if (!Directory.Exists(dbFolder))
+            {
+                Directory.CreateDirectory(dbFolder);
+            }
+
+            if (!File.Exists(dbPath))
+            {
+                SQLiteConnection.CreateFile(dbPath);
+
+                using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+                {
+                    conn.Open();
+                    using (var cmd = new SQLiteCommand("CREATE TABLE Labels (Path TEXT PRIMARY KEY, Label TEXT)", conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
             using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
             {
                 conn.Open();
@@ -54,6 +72,24 @@ namespace ImageLabelApp
 
         public static void RemoveLabel(string imagePath, string label)
         {
+            if (!Directory.Exists(dbFolder))
+            {
+                Directory.CreateDirectory(dbFolder);
+            }
+
+            if (!File.Exists(dbPath))
+            {
+                SQLiteConnection.CreateFile(dbPath);
+
+                using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+                {
+                    conn.Open();
+                    using (var cmd = new SQLiteCommand("CREATE TABLE Labels (Path TEXT PRIMARY KEY, Label TEXT)", conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
             using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
             {
                 conn.Open();
@@ -69,6 +105,24 @@ namespace ImageLabelApp
 
         public static List<string> GetImagesForLabel(string label)
         {
+            if (!Directory.Exists(dbFolder))
+            {
+                Directory.CreateDirectory(dbFolder);
+            }
+
+            if (!File.Exists(dbPath))
+            {
+                SQLiteConnection.CreateFile(dbPath);
+
+                using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+                {
+                    conn.Open();
+                    using (var cmd = new SQLiteCommand("CREATE TABLE Labels (Path TEXT PRIMARY KEY, Label TEXT)", conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
             var result = new List<string>();
             using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
             {
@@ -89,6 +143,24 @@ namespace ImageLabelApp
         }
         public static bool IsImageLabeled(string imagePath, string label)
         {
+            if (!Directory.Exists(dbFolder))
+            {
+                Directory.CreateDirectory(dbFolder);
+            }
+
+            if (!File.Exists(dbPath))
+            {
+                SQLiteConnection.CreateFile(dbPath);
+
+                using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+                {
+                    conn.Open();
+                    using (var cmd = new SQLiteCommand("CREATE TABLE Labels (Path TEXT PRIMARY KEY, Label TEXT)", conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
             using (var connection = new SQLiteConnection($"Data Source={dbPath}"))
             {
                 connection.Open();
