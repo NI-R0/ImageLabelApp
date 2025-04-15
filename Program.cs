@@ -51,15 +51,17 @@ namespace ImageLabelApp
                         return;
 
                     case "remove":
-                        if (LabelDatabase.IsImageLabeled(imagePath, label))
-                        {
-                            LabelerService.UnlabelImage(imagePath, label);
-                            Console.WriteLine($"Removed label '{label}' from '{imagePath}'");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"'{imagePath}' is not labeled as '{label}'");
-                        }
+                        LabelerService.UnlabelImage(imagePath, label);
+                        Console.WriteLine($"Removed label '{label}' from '{imagePath}'");
+                        //if (LabelDatabase.IsImageLabeled(imagePath, label))
+                        //{
+                        //    LabelerService.UnlabelImage(imagePath, label);
+                        //    Console.WriteLine($"Removed label '{label}' from '{imagePath}'");
+                        //}
+                        //else
+                        //{
+                        //    Console.WriteLine($"'{imagePath}' is not labeled as '{label}'");
+                        //}
                         return;
 
                     default:
