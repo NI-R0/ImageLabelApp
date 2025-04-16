@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
@@ -11,25 +12,12 @@ namespace ImageLabelApp
     {
         static void Main(string[] args)
         {
-            if (args.Length == 1)
+            if (args.Length == 0)
             {
-                switch (args[0].ToLower())
-                {
-                    case "install":
-                        ContextMenuInstaller.InstallContextMenu();
-                        Console.WriteLine("Context menu installed!");
-                        return;
-
-                    case "uninstall":
-                        ContextMenuInstaller.UninstallContextMenu();
-                        LabelerService.DeleteApplication();
-                        Console.WriteLine("Context menu uninstalled!");
-                        return;
-
-                    default:
-                        Console.WriteLine("Invalid argument. Use 'install' or 'uninstall'.");
-                        return;
-                }
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new forms.InstallForm());
+                return;
             }
 
             if (args.Length == 3)
@@ -54,15 +42,6 @@ namespace ImageLabelApp
                     case "remove":
                         LabelerService.UnlabelImage(imagePath, label);
                         Console.WriteLine($"Removed label '{label}' from '{imagePath}'");
-                        //if (LabelDatabase.IsImageLabeled(imagePath, label))
-                        //{
-                        //    LabelerService.UnlabelImage(imagePath, label);
-                        //    Console.WriteLine($"Removed label '{label}' from '{imagePath}'");
-                        //}
-                        //else
-                        //{
-                        //    Console.WriteLine($"'{imagePath}' is not labeled as '{label}'");
-                        //}
                         return;
 
                     default:
@@ -70,11 +49,6 @@ namespace ImageLabelApp
                         return;
                 }
             }
-
-            Console.WriteLine("Usage:");
-            Console.WriteLine("  ImageLabelApp.exe install");
-            Console.WriteLine("  ImageLabelApp.exe uninstall");
-            Console.WriteLine("  ImageLabelApp.exe <image-path> add|remove <label>");
         }
     }
 }
