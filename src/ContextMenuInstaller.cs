@@ -38,11 +38,23 @@ namespace ImageLabelApp
             string commandAddMe = $"\"{exePath}\" \"%1\" add Me";
             string commandRemoveFavourites = $"\"{exePath}\" \"%1\" remove Favourites";
             string commandRemoveMe = $"\"{exePath}\" \"%1\" remove Me";
+            
+            string commandEditLabels = $"\"{exePath}\" \"%1\" edit";
+            //key.CreateSubKey(@"*\shell\Add Label\command").SetValue("", commandAddLabel);
 
             using (RegistryKey baseKey = Registry.ClassesRoot.CreateSubKey(keyPath))
             {
                 baseKey.SetValue("MUIVerb", "Add Label");
                 baseKey.SetValue("SubCommands", "");
+            }
+
+            using (RegistryKey editKey = Registry.ClassesRoot.CreateSubKey($@"{keyPath}\shell\editLabels"))
+            {
+                editKey.SetValue("MUIVerb", "Edit Labels");
+                using (RegistryKey commandKey = editKey.CreateSubKey("command"))
+                {
+                    commandKey.SetValue("", commandEditLabels);
+                }
             }
 
             using (RegistryKey favouritesKey = Registry.ClassesRoot.CreateSubKey($@"{keyPath}\shell\Favourites"))

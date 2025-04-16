@@ -89,6 +89,9 @@
     <Compile Include="forms\InstallForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="forms\LabelManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\ContextMenuInstaller.cs" />
     <Compile Include="src\LabelDatabase.cs" />
     <Compile Include="src\LabelerService.cs" />

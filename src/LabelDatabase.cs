@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ImageLabelApp
 {
@@ -96,17 +97,26 @@ namespace ImageLabelApp
                 {
                     Directory.CreateDirectory(dbFolder);
                 }
-
                 if (!File.Exists(dbPath))
                 {
                     SQLiteConnection.CreateFile(dbPath);
                 }
-
                 using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
                 {
                     conn.Open();
+
+                    // Create a table for unique labels
                     using (var cmd = new SQLiteCommand(
-                        "CREATE TABLE IF NOT EXISTS Labels (Path TEXT PRIMARY KEY, Label TEXT)", conn))
+                        "CREATE TABLE IF NOT EXISTS Labels (LabelId INTEGER PRIMARY KEY AUTOINCREMENT, LabelName TEXT UNIQUE)", conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Create a table for image-label associations
+                    using (var cmd = new SQLiteCommand(
+                        "CREATE TABLE IF NOT EXISTS ImageLabels (ImagePath TEXT, LabelId INTEGER, " +
+                        "PRIMARY KEY (ImagePath, LabelId), " +
+                        "FOREIGN KEY (LabelId) REFERENCES Labels(LabelId))", conn))
                     {
                         cmd.ExecuteNonQuery();
                     }
@@ -114,10 +124,45 @@ namespace ImageLabelApp
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 Console.WriteLine("Failed to initialize label database: " + ex.Message);
                 throw;
             }
         }
+
+        public static List<string> GetLabels(string imagePath)
+        {
+            List<string> labels = new List<string>();
+            EnsureDatabaseInitialized();
+
+            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                conn.Open();
+                var cmd = new SQLiteCommand(
+                    "SELECT LabelName FROM Labels ORDER BY LabelName", conn);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                        labels.Add(reader.GetString(0));
+                }
+            }
+            return labels;
+        }
+
+        public static void ClearLabels(string imagePath)
+        {
+            EnsureDatabaseInitialized();
+
+            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                conn.Open();
+                var cmd = new SQLiteCommand("DELETE FROM Labels WHERE ImagePath = @path", conn);
+                cmd.Parameters.AddWithValue("@path", imagePath);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
 
         public static void DeleteDatabaseFile()
         {

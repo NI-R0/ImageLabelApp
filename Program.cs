@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImageLabelApp
 {
@@ -18,6 +13,36 @@ namespace ImageLabelApp
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new forms.InstallForm());
                 return;
+            }
+
+            if (args.Length == 2) 
+            {
+                //string imagePath = args[0];
+                //Application.EnableVisualStyles();
+                //Application.SetCompatibleTextRenderingDefault(false);
+                //MessageBox.Show("Trying to load edit window", "Success",
+                //    MessageBoxButtons.OK);
+                //Application.Run(new forms.LabelManagerForm(imagePath));
+                try
+                {
+                    if (args.Length > 0)
+                    {
+                        string imagePath = args[0];
+                        // Use Form.Show() for debugging to see any exceptions
+                        var form = new forms.LabelManagerForm(imagePath);
+                        Application.Run(form);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No image path provided.", "Error",
+                                       MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error starting application: {ex.Message}\n\n{ex.StackTrace}",
+                                    "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
 
             if (args.Length == 3)
