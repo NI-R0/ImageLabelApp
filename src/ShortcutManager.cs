@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IWshRuntimeLibrary;
 
 namespace ImageLabelApp
 {
@@ -22,19 +17,10 @@ namespace ImageLabelApp
 
             string destinationPath = Path.Combine(labelFolder, Path.GetFileName(imagePath));
 
-            if (!System.IO.File.Exists(destinationPath))
+            if (!File.Exists(destinationPath))
             {
-                System.IO.File.Copy(imagePath, destinationPath);
+                File.Copy(imagePath, destinationPath);
             }
-
-
-            //string shortcutName = Path.GetFileName(targetPath) + ".lnk";
-            //string shortcutPath = Path.Combine(labelFolder, shortcutName);
-
-            //var shell = new WshShell();
-            //IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(shortcutPath);
-            //shortcut.TargetPath = targetPath;
-            //shortcut.Save();
         }
 
         public static void RemoveShortcut(string imagePath, string label)
@@ -47,9 +33,9 @@ namespace ImageLabelApp
 
             string copyPath = Path.Combine(labelFolder, Path.GetFileName(imagePath));
 
-            if (System.IO.File.Exists(copyPath))
+            if (File.Exists(copyPath))
             {
-                System.IO.File.Delete(copyPath);
+                File.Delete(copyPath);
             }
         }
 
