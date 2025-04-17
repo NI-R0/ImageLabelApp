@@ -39,6 +39,15 @@ namespace ImageLabelApp
             }
         }
 
+        public static void RemoveLabelFolder(string labelName)
+        {
+            string labelFolder = Path.Combine(baseFolder, labelName);
+            if (Directory.Exists(labelFolder))
+            {
+                Directory.Delete(labelFolder, true);
+            }
+        }
+
         public static void RemoveLabelFolders()
         {
             if (Directory.Exists(baseFolder))

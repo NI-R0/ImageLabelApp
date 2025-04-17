@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImageLabelApp
 {
@@ -17,10 +12,16 @@ namespace ImageLabelApp
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new forms.InstallForm());
-                return;
             }
 
-            if (args.Length == 3)
+            else if (args.Length == 1) 
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new forms.LabelManagerForm());
+            }
+
+            else if (args.Length == 3)
             {
                 string imagePath = args[0];
                 string command = args[1].ToLower();
