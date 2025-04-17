@@ -8,7 +8,6 @@ namespace ImageLabelApp.forms
 {
     public class LabelManagerForm : Form
     {
-        private readonly string imagePath;
         private ListBox labelListBox;
         private TextBox newLabelTextBox;
         private Button addButton;

@@ -25,6 +25,11 @@ namespace ImageLabelApp
             EnsureDatabaseInitialized();
         }
 
+        public static void CreateDatabase()
+        {
+            EnsureDatabaseInitialized();
+        }
+
         private static void EnsureDatabaseInitialized()
         {
             try
@@ -91,14 +96,21 @@ namespace ImageLabelApp
             // Create new label in database
             // Form -> Create new context menu entry
             EnsureDatabaseInitialized();
-            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            try
             {
-                conn.Open();
-                using (var cmd = new SQLiteCommand("INSERT OR REPLACE INTO Labels (LabelName) VALUES (@l)", conn))
+                using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
                 {
-                    cmd.Parameters.AddWithValue("@l", labelName);
-                    cmd.ExecuteNonQuery();
+                    conn.Open();
+                    using (var cmd = new SQLiteCommand("INSERT OR REPLACE INTO Labels (LabelName) VALUES (@l)", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@l", labelName);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -163,12 +175,15 @@ namespace ImageLabelApp
             using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
             {
                 conn.Open();
-                var cmd = new SQLiteCommand("SELECT LabelName FROM LABELS WHERE LabelName = @l", conn);
-                using (var reader = cmd.ExecuteReader())
+                using (var cmd = new SQLiteCommand("SELECT LabelName FROM LABELS WHERE LabelName = @l", conn))
                 {
-                    while (reader.Read())
+                    cmd.Parameters.AddWithValue("@l", labelName);
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        labels.Add(reader.GetString(0));
+                        while (reader.Read())
+                        {
+                            labels.Add(reader.GetString(0));
+                        }
                     }
                 }
             }

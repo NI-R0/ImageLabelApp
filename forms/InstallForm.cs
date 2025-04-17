@@ -41,17 +41,20 @@ namespace ImageLabelApp.forms
 
             installButton.Click += (s, e) =>
             {
+                LabelDatabase.CreateDatabase();
                 ContextMenuManager.InstallContextMenu();
+
                 MessageBox.Show("Context menu entries installed.", "Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Application.Run(new LabelManagerForm());
                 Application.Exit();
             };
 
             uninstallButton.Click += (s, e) =>
             {
+                ShortcutManager.RemoveLabelFolders();
                 LabelDatabase.DeleteDatabase();
                 ContextMenuManager.UninstallContextMenu();
+
                 MessageBox.Show("Context menu entries removed.", "Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Application.Exit();
