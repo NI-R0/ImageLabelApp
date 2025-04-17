@@ -44,6 +44,7 @@ namespace ImageLabelApp.forms
                 ContextMenuInstaller.InstallContextMenu();
                 MessageBox.Show("Context menu entries installed.", "Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Application.Run(new LabelManagerForm());
                 Application.Exit();
             };
 

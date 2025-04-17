@@ -156,6 +156,25 @@ namespace ImageLabelApp
             }
         }
 
+        public static bool LabelExists(string labelName)
+        {
+            List<string> labels = new List<string>();
+            EnsureDatabaseInitialized();
+            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                conn.Open();
+                var cmd = new SQLiteCommand("SELECT LabelName FROM LABELS WHERE LabelName = @l", conn);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        labels.Add(reader.GetString(0));
+                    }
+                }
+            }
+            return (labels.Count > 0);
+        }
+
         public static void DeleteDatabase()
         {
             if (Directory.Exists(dbFolder))
