@@ -17,16 +17,8 @@ namespace ImageLabelApp
 
         public static void UnlabelImage(string imagePath, string label)
         {
-            try
-            {
-                LabelDatabase.RemoveLabelFromImage(imagePath, label);
-                ShortcutManager.RemoveShortcut(imagePath, label);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            LabelDatabase.RemoveLabelFromImage(imagePath, label);
+            ShortcutManager.RemoveShortcut(imagePath, label);
         }
     }
 }
