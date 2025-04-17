@@ -39,7 +39,7 @@ namespace ImageLabelApp
             string commandRemoveFavourites = $"\"{exePath}\" \"%1\" remove Favourites";
             string commandRemoveMe = $"\"{exePath}\" \"%1\" remove Me";
             
-            string commandEditLabels = $"\"{exePath}\" \"%1\" edit";
+            string commandEditLabels = $"\"{exePath}\" edit";
             //key.CreateSubKey(@"*\shell\Add Label\command").SetValue("", commandAddLabel);
 
             using (RegistryKey baseKey = Registry.ClassesRoot.CreateSubKey(keyPath))
