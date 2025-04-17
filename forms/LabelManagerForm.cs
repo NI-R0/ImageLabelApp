@@ -80,7 +80,7 @@ namespace ImageLabelApp.forms
         {
             try
             {
-                var labels = LabelDatabase.GetLabels(imagePath);
+                var labels = LabelDatabase.GetAllLabels();
                 foreach (var label in labels)
                     this.labelListBox.Items.Add(label);
             }

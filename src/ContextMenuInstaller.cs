@@ -106,11 +106,21 @@ namespace ImageLabelApp
             }
         }
 
+        private static void AddLabelEntry(string labelName)
+        {
+            //Add new label to both "Add" and "Remove"
+        }
+
+        private static void RemoveLabelEntry(string labelName)
+        {
+            //Remove label from both "Add" and "Remove"
+        }
+
         public static void UninstallContextMenu()
         {
             string keyPath = @"*\shell\Add Label";
             string removeFavouriteKey = @"*\shell\RemoveLabel_Favourites";
-            string removeMeKey = @"*\shell\RemoveLabel_Me"; 
+            string removeMeKey = @"*\shell\RemoveLabel_Me";
             string removeLabelKey = @"*\shell\Remove Label";
 
             try

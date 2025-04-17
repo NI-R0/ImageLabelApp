@@ -11,6 +11,9 @@ namespace ImageLabelApp
 {
     public static class LabelDatabase
     {
+        // Labels (LabelName)
+        // ImageLabels (ImagePath, LabelName)
+
         private static readonly string dbFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "ImageLabelApp"
@@ -20,73 +23,6 @@ namespace ImageLabelApp
         static LabelDatabase()
         {
             EnsureDatabaseInitialized();
-        }
-
-        public static void AddLabel(string imagePath, string label)
-        {
-            EnsureDatabaseInitialized();
-            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
-            {
-                conn.Open();
-                using (var cmd = new SQLiteCommand("INSERT OR REPLACE INTO Labels (Path, Label) VALUES (@p, @l)", conn))
-                {
-                    cmd.Parameters.AddWithValue("@p", imagePath);
-                    cmd.Parameters.AddWithValue("@l", label);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-        public static void RemoveLabel(string imagePath, string label)
-        {
-            EnsureDatabaseInitialized();
-            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
-            {
-                conn.Open();
-                using (var cmd = new SQLiteCommand("DELETE FROM Labels WHERE Path = @p AND Label = @l", conn))
-                {
-                    cmd.Parameters.AddWithValue("@p", imagePath);
-                    cmd.Parameters.AddWithValue("@l", label);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
-
-        public static List<string> GetImagesForLabel(string label)
-        {
-            EnsureDatabaseInitialized();
-            var result = new List<string>();
-            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
-            {
-                conn.Open();
-                using (var cmd = new SQLiteCommand("SELECT Path FROM Labels WHERE Label = @l", conn))
-                {
-                    cmd.Parameters.AddWithValue("@l", label);
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            result.Add(reader.GetString(0));
-                        }
-                    }
-                }
-            }
-            return result;
-        }
-        public static bool IsImageLabeled(string imagePath, string label)
-        {
-            EnsureDatabaseInitialized();
-            using (var connection = new SQLiteConnection($"Data Source={dbPath}"))
-            {
-                connection.Open();
-                var cmd = new SQLiteCommand("SELECT COUNT(*) FROM Labels WHERE Path = @path AND Label = @label", connection);
-                cmd.Parameters.AddWithValue("@path", imagePath);
-                cmd.Parameters.AddWithValue("@label", label);
-
-                long count = (long)cmd.ExecuteScalar();
-                return count > 0;
-            }
         }
 
         private static void EnsureDatabaseInitialized()
@@ -107,16 +43,16 @@ namespace ImageLabelApp
 
                     // Create a table for unique labels
                     using (var cmd = new SQLiteCommand(
-                        "CREATE TABLE IF NOT EXISTS Labels (LabelId INTEGER PRIMARY KEY AUTOINCREMENT, LabelName TEXT UNIQUE)", conn))
+                        "CREATE TABLE IF NOT EXISTS Labels (LabelName TEXT PRIMARY KEY )", conn))
                     {
                         cmd.ExecuteNonQuery();
                     }
 
                     // Create a table for image-label associations
                     using (var cmd = new SQLiteCommand(
-                        "CREATE TABLE IF NOT EXISTS ImageLabels (ImagePath TEXT, LabelId INTEGER, " +
-                        "PRIMARY KEY (ImagePath, LabelId), " +
-                        "FOREIGN KEY (LabelId) REFERENCES Labels(LabelId))", conn))
+                        "CREATE TABLE IF NOT EXISTS ImageLabels (ImagePath TEXT, LabelName TEXT, " +
+                        "PRIMARY KEY (ImagePath, LabelName), " +
+                        "FOREIGN KEY (LabelName) REFERENCES Labels(LabelName))", conn))
                     {
                         cmd.ExecuteNonQuery();
                     }
@@ -130,7 +66,7 @@ namespace ImageLabelApp
             }
         }
 
-        public static List<string> GetLabels(string imagePath)
+        public static List<string> GetAllLabels()
         {
             List<string> labels = new List<string>();
             EnsureDatabaseInitialized();
@@ -150,26 +86,83 @@ namespace ImageLabelApp
             return labels;
         }
 
-        public static void ClearLabels(string imagePath)
+        public static void CreateNewLabel(string labelName)
         {
+            // Create new label in database
+            // Form -> Create new context menu entry
             EnsureDatabaseInitialized();
-
             using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
             {
                 conn.Open();
-                var cmd = new SQLiteCommand("DELETE FROM Labels WHERE ImagePath = @path", conn);
-                cmd.Parameters.AddWithValue("@path", imagePath);
-                cmd.ExecuteNonQuery();
+                using (var cmd = new SQLiteCommand("INSERT OR REPLACE INTO Labels (LabelName) VALUES (@l)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@l", labelName);
+                    cmd.ExecuteNonQuery();
+                }
             }
         }
 
+        public static void DeleteExistingLabel(string labelName)
+        {
+            // Form -> Delete label folder
+            // Delete all entries from ImageLabels where label=labelName
+            // Delete label from labels
+            EnsureDatabaseInitialized();
+            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                conn.Open();
+                using (var cmd = new SQLiteCommand("DELETE FROM ImageLabels WHERE LabelName = @l", conn))
+                {
+                    cmd.Parameters.AddWithValue("@l", labelName);
+                    cmd.ExecuteNonQuery();
+                }
+                using (var cmd = new SQLiteCommand("DELETE FROM Labels WHERE LabelName = @l", conn))
+                {
+                    cmd.Parameters.AddWithValue("@l", labelName);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
-        public static void DeleteDatabaseFile()
+        public static void AddLabelToImage(string imagePath, string labelName)
+        {
+            // Add entry into ImageLabels
+            EnsureDatabaseInitialized();
+            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                conn.Open();
+                using (var cmd = new SQLiteCommand("INSERT OR REPLACE INTO ImageLabels (ImagePath, LabelName) VALUES (@p, @l)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@p", imagePath);
+                    cmd.Parameters.AddWithValue("@l", labelName);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void RemoveLabelFromImage(string imagePath, string labelName)
+        {
+            // Remove entry from ImageLabels
+            EnsureDatabaseInitialized();
+            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                conn.Open();
+                using (var cmd = new SQLiteCommand("DELETE FROM ImageLabels WHERE Path = @p AND Label = @l", conn))
+                {
+                    cmd.Parameters.AddWithValue("@p", imagePath);
+                    cmd.Parameters.AddWithValue("@l", labelName);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void DeleteDatabase()
         {
             if (Directory.Exists(dbFolder))
             {
                 Directory.Delete(dbFolder, true);
             }
         }
+
     }
 }
