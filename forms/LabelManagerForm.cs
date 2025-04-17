@@ -69,7 +69,7 @@ namespace ImageLabelApp.forms
                 if (!string.IsNullOrEmpty(newLabel) && !this.labelListBox.Items.Contains(newLabel) && !LabelDatabase.LabelExists(newLabel))
                 {
                     LabelDatabase.CreateNewLabel(newLabel);
-                    ContextMenuInstaller.AddLabelEntry(newLabel);
+                    ContextMenuManager.AddLabelEntries(newLabel);
                     this.labelListBox.Items.Add(newLabel);
                     this.newLabelTextBox.Clear();
                 }
@@ -81,6 +81,7 @@ namespace ImageLabelApp.forms
                 {
                     string labelName = this.labelListBox.SelectedItem.ToString().Trim();
                     ShortcutManager.RemoveLabelFolder(labelName);
+                    ContextMenuManager.RemoveLabelEntries(labelName);
                     LabelDatabase.DeleteExistingLabel(labelName);
                     this.labelListBox.Items.Remove(this.labelListBox.SelectedItem);
                 }
