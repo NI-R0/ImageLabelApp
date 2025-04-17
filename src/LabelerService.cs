@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ImageLabelApp
 {
@@ -16,8 +17,16 @@ namespace ImageLabelApp
 
         public static void UnlabelImage(string imagePath, string label)
         {
-            LabelDatabase.RemoveLabelFromImage(imagePath, label);
-            ShortcutManager.RemoveShortcut(imagePath, label);
+            try
+            {
+                LabelDatabase.RemoveLabelFromImage(imagePath, label);
+                ShortcutManager.RemoveShortcut(imagePath, label);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

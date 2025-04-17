@@ -159,7 +159,7 @@ namespace ImageLabelApp
             using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
             {
                 conn.Open();
-                using (var cmd = new SQLiteCommand("DELETE FROM ImageLabels WHERE Path = @p AND Label = @l", conn))
+                using (var cmd = new SQLiteCommand("DELETE FROM ImageLabels WHERE ImagePath = @p AND LabelName = @l", conn))
                 {
                     cmd.Parameters.AddWithValue("@p", imagePath);
                     cmd.Parameters.AddWithValue("@l", labelName);
