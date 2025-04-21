@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 
 namespace ImageLabelApp
@@ -77,11 +78,19 @@ namespace ImageLabelApp
                 switch (command)
                 {
                     case "add":
+                        if (ShortcutManager.ImageInLabelfolder(imagePath))
+                        {
+                            return;
+                        }
                         LabelerService.LabelImage(imagePath, label);
                         Console.WriteLine($"Added label '{label}' to '{imagePath}'");
                         return;
 
                     case "remove":
+                        if (ShortcutManager.ImageInLabelfolder(imagePath))
+                        {
+                            return;
+                        }
                         LabelerService.UnlabelImage(imagePath, label);
                         Console.WriteLine($"Removed label '{label}' from '{imagePath}'");
                         return;

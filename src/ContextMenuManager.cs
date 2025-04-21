@@ -13,8 +13,8 @@ namespace ImageLabelApp
     public static class ContextMenuManager
     {
         private static readonly string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-        private static readonly string addDropdownPath = @"*\shell\Add Label";
-        private static readonly string removeDropdownPath = @"*\shell\Remove Label";
+        private static readonly string addDropdownPath = @"SystemFileAssociations\image\shell\Add Label";
+        private static readonly string removeDropdownPath = @"SystemFileAssociations\image\shell\Remove Label";
 
         public static void InstallContextMenu()
         {

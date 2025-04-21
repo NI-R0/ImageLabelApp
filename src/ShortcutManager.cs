@@ -55,5 +55,21 @@ namespace ImageLabelApp
                 Directory.Delete(baseFolder, true);
             }
         }
+
+        public static bool ImageInLabelfolder(string imagePath)
+        {
+            DirectoryInfo labelDir = new DirectoryInfo(baseFolder);
+            DirectoryInfo imageDir = new DirectoryInfo(imagePath);
+
+            while (imageDir.Parent != null)
+            {
+                if (labelDir.FullName == imageDir.FullName)
+                {
+                    return true;
+                }
+                imageDir = imageDir.Parent;
+            }
+            return false;
+        }
     }
 }
