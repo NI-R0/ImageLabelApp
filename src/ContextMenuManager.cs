@@ -39,7 +39,7 @@ namespace ImageLabelApp
             AddCmdToMenu(addDropdownPath, commandEdit, "Edit Labels");
             AddCmdToMenu(removeDropdownPath, commandEdit, "Edit Labels");
 
-            LabelDatabase.CreateNewLabel("Favourites");
+            DatabaseHandler.CreateNewLabel("Favourites");
             AddLabelEntries("Favourites");
         }
 

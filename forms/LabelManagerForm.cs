@@ -65,9 +65,9 @@ namespace ImageLabelApp.forms
             this.addButton.Click += (s, e) =>
             {
                 string newLabel = this.newLabelTextBox.Text.Trim();
-                if (!string.IsNullOrEmpty(newLabel) && !this.labelListBox.Items.Contains(newLabel) && !LabelDatabase.LabelExists(newLabel))
+                if (!string.IsNullOrEmpty(newLabel) && !this.labelListBox.Items.Contains(newLabel) && !DatabaseHandler.LabelExists(newLabel))
                 {
-                    LabelDatabase.CreateNewLabel(newLabel);
+                    DatabaseHandler.CreateNewLabel(newLabel);
                     ContextMenuManager.AddLabelEntries(newLabel);
                     this.labelListBox.Items.Add(newLabel);
                     this.newLabelTextBox.Clear();
@@ -81,7 +81,7 @@ namespace ImageLabelApp.forms
                     string labelName = this.labelListBox.SelectedItem.ToString().Trim();
                     ShortcutManager.RemoveLabelFolder(labelName);
                     ContextMenuManager.RemoveLabelEntries(labelName);
-                    LabelDatabase.DeleteExistingLabel(labelName);
+                    DatabaseHandler.DeleteExistingLabel(labelName);
                     this.labelListBox.Items.Remove(this.labelListBox.SelectedItem);
                 }
             };
@@ -97,7 +97,7 @@ namespace ImageLabelApp.forms
         {
             try
             {
-                var labels = LabelDatabase.GetAllLabels();
+                var labels = DatabaseHandler.GetAllLabels();
                 foreach (var label in labels)
                     this.labelListBox.Items.Add(label);
             }
