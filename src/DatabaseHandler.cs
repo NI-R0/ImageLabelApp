@@ -63,7 +63,9 @@ namespace ImageLabelApp
                         cmd.ExecuteNonQuery();
                     }
 
-                    using (var cmd = new SQLiteCommand("CREATE TABLE IF NOT EXISTS AppSettings (Name TEXT PRIMARY KEY, Value TEXT"))
+                    // Create a table for (future) app settings
+                    using (var cmd = new SQLiteCommand(
+                        "CREATE TABLE IF NOT EXISTS AppSettings (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT UNIQUE, Value TEXT)", conn))
                     {
                         cmd.ExecuteNonQuery();
                     }
@@ -71,7 +73,7 @@ namespace ImageLabelApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("EnsureDatabaseInitialized - " + ex.Message);
                 Console.WriteLine("Failed to initialize label database: " + ex.Message);
                 throw;
             }
@@ -214,7 +216,7 @@ namespace ImageLabelApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("SetShortcutFolder - " + ex.Message);
             }
         }
 
@@ -246,7 +248,7 @@ namespace ImageLabelApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, $"ShortcutFolderPath: {path}");
             }
             return path;
         }

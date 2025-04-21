@@ -7,6 +7,7 @@ namespace ImageLabelApp
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
@@ -34,6 +35,7 @@ namespace ImageLabelApp
                     }
                     DatabaseHandler.CreateDatabase();
                     ContextMenuManager.InstallContextMenu();
+                    ShortcutManager.CreateShortcutFolder();
                     MessageBox.Show("Context menu entries installed.", "Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
