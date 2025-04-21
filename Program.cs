@@ -7,6 +7,7 @@ namespace ImageLabelApp
 {
     class Program
     {
+        [STAThread]
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
@@ -32,8 +33,9 @@ namespace ImageLabelApp
                         RestartAsAdmin("--install-context-menu");
                         return;
                     }
-                    LabelDatabase.CreateDatabase();
+                    DatabaseHandler.CreateDatabase();
                     ContextMenuManager.InstallContextMenu();
+                    ShortcutManager.CreateShortcutFolder();
                     MessageBox.Show("Context menu entries installed.", "Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -46,7 +48,7 @@ namespace ImageLabelApp
                         return;
                     }
                     ShortcutManager.RemoveLabelFolders();
-                    LabelDatabase.DeleteDatabase();
+                    DatabaseHandler.DeleteDatabase();
                     ContextMenuManager.UninstallContextMenu();
                     MessageBox.Show("Context menu entries removed.", "Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);

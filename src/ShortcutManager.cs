@@ -5,10 +5,15 @@ namespace ImageLabelApp
 {
     public static class ShortcutManager
     {
-        private static readonly string baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Labels");
+        public static void CreateShortcutFolder()
+        {
+            string shortcutFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Labels");
+            DatabaseHandler.SetShortcutFolder(shortcutFolder);
+        }
 
         public static void CreateShortcut(string imagePath, string label)
         {
+            string baseFolder = DatabaseHandler.GetShortcutFolder();
             string labelFolder = Path.Combine(baseFolder, label);
             if (!Directory.Exists(labelFolder))
             {
@@ -25,6 +30,7 @@ namespace ImageLabelApp
 
         public static void RemoveShortcut(string imagePath, string label)
         {
+            string baseFolder = DatabaseHandler.GetShortcutFolder();
             string labelFolder = Path.Combine(baseFolder, label);
             if (!Directory.Exists(labelFolder)) 
             {
@@ -41,6 +47,7 @@ namespace ImageLabelApp
 
         public static void RemoveLabelFolder(string labelName)
         {
+            string baseFolder = DatabaseHandler.GetShortcutFolder();
             string labelFolder = Path.Combine(baseFolder, labelName);
             if (Directory.Exists(labelFolder))
             {
@@ -50,6 +57,7 @@ namespace ImageLabelApp
 
         public static void RemoveLabelFolders()
         {
+            string baseFolder = DatabaseHandler.GetShortcutFolder();
             if (Directory.Exists(baseFolder))
             {
                 Directory.Delete(baseFolder, true);
@@ -58,6 +66,7 @@ namespace ImageLabelApp
 
         public static bool ImageInLabelfolder(string imagePath)
         {
+            string baseFolder = DatabaseHandler.GetShortcutFolder();
             DirectoryInfo labelDir = new DirectoryInfo(baseFolder);
             DirectoryInfo imageDir = new DirectoryInfo(imagePath);
 
