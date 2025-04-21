@@ -5,7 +5,7 @@ namespace ImageLabelApp
 {
     public static class ShortcutManager
     {
-        private static readonly string baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ImageLabels");
+        private static readonly string baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Labels");
 
         public static void CreateShortcut(string imagePath, string label)
         {
@@ -54,6 +54,22 @@ namespace ImageLabelApp
             {
                 Directory.Delete(baseFolder, true);
             }
+        }
+
+        public static bool ImageInLabelfolder(string imagePath)
+        {
+            DirectoryInfo labelDir = new DirectoryInfo(baseFolder);
+            DirectoryInfo imageDir = new DirectoryInfo(imagePath);
+
+            while (imageDir.Parent != null)
+            {
+                if (labelDir.FullName == imageDir.FullName)
+                {
+                    return true;
+                }
+                imageDir = imageDir.Parent;
+            }
+            return false;
         }
     }
 }
