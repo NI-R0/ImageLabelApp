@@ -1,6 +1,6 @@
 # 🖼️ Image Label App
 
-A lightweight Windows application that allows you to **label images via the right-click context menu** in File Explorer. Labels `Favourites` and `Me` can be added or removed, and the app keeps track of them in a local SQLite database. The labeled images are automatically copied into virtual folders based on their labels.
+A lightweight Windows application that allows you to **label images via the right-click context menu** in File Explorer. Label `Favourites` is preset but one can create as many labels as he wants; the app keeps track of them in a local SQLite database. The labeled images are automatically copied into virtual folders based on their labels.
 
 ---
 
@@ -17,14 +17,13 @@ A lightweight Windows application that allows you to **label images via the righ
 ## 🚀 Quick Start
 
 ### 1. **Installation**
-- Clone the repository and adjust the code so that it supports your desired labels.
-- Rebuild the project.
+- Clone the repository and build the project using Visual Studio.
 - Place the compiled `.exe` and required `.dll`s in a folder.
-- Open the folder in Powershell as Administrator and run `& ".\ImageLabelApp.exe" install`. After right-clicking any image you should now see the options `Add Label` and `Remove Label`.
+- Run the `.exe` (you'll need administrator rights) click on `install`. After right-clicking any image you should now see the menu options `Add Label` and `Remove Label`.
 
 ### 2. **Usage**
 - Right-click any image and choose `Add Label`/`Remove Label` → `YourLabelName`. <br/>
-  **NOTE:** Doing this for the first time will create the database file under `%APPDATA%\Roaming\ImageLabelApp\labels.db` as well as the label folders under `%USER%\Pictures\ImageLabelApp\`.
+  **NOTE:** Doing this for the first time will create the database file under `%APPDATA%\Roaming\ImageLabelApp\labels.db` as well as the label folders under `%USER%\Pictures\Labels\`.
 
 ### 3. Uninstall
-- Open the installation folder in Powershell as Administrator and run `& ".\ImageLabelApp" uninstall`. This will take care of removing the label folders as well as the database folder.
+- Run the `.exe` and click on `uninstall`. This will take care of removing the label folders as well as the database folder.

@@ -5,7 +5,7 @@ namespace ImageLabelApp
 {
     public static class ShortcutManager
     {
-        private static readonly string baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ImageLabels");
+        private static readonly string baseFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Labels");
 
         public static void CreateShortcut(string imagePath, string label)
         {
