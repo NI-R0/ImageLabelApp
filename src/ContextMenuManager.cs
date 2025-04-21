@@ -37,7 +37,7 @@ namespace ImageLabelApp
 
             string commandEdit = $"\"{exePath}\" edit";
             AddCmdToMenu(addDropdownPath, commandEdit, "Edit Labels");
-            AddCmdToMenu(removeDropdownPath, commandEdit, "Edit Labels");
+            //AddCmdToMenu(removeDropdownPath, commandEdit, "Edit Labels");
 
             DatabaseHandler.CreateNewLabel("Favourites");
             AddLabelEntries("Favourites");
