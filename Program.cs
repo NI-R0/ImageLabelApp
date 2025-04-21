@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace ImageLabelApp
@@ -7,18 +8,58 @@ namespace ImageLabelApp
     {
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             if (args.Length == 0)
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
+                if (!IsAdministrator()) 
+                {
+                    RestartAsAdmin("");
+                    return;
+                }
                 Application.Run(new forms.InstallForm());
             }
 
             else if (args.Length == 1) 
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new forms.LabelManagerForm());
+                var operation = args[0];
+                if (operation == "--install-context-menu")
+                {
+                    if (!IsAdministrator())
+                    {
+                        RestartAsAdmin("--install-context-menu");
+                        return;
+                    }
+                    LabelDatabase.CreateDatabase();
+                    ContextMenuManager.InstallContextMenu();
+                    MessageBox.Show("Context menu entries installed.", "Success",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                else if (operation == "--uninstall-context-menu")
+                {
+                    if (!IsAdministrator())
+                    {
+                        RestartAsAdmin("--uninstall-context-menu");
+                        return;
+                    }
+                    ShortcutManager.RemoveLabelFolders();
+                    LabelDatabase.DeleteDatabase();
+                    ContextMenuManager.UninstallContextMenu();
+                    MessageBox.Show("Context menu entries removed.", "Success",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                else if (operation == "edit")
+                {
+                    if (!IsAdministrator())
+                    {
+                        RestartAsAdmin("edit");
+                        return;
+                    }
+                    Application.Run(new forms.LabelManagerForm());
+                }
             }
 
             else if (args.Length == 3)
@@ -49,6 +90,35 @@ namespace ImageLabelApp
                         Console.WriteLine("Invalid command. Use 'add' or 'remove'.");
                         return;
                 }
+            }
+        }
+
+        static bool IsAdministrator()
+        {
+            var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+            var principal = new System.Security.Principal.WindowsPrincipal(identity);
+            return principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+        }
+
+        static void RestartAsAdmin(string arguments)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = Application.ExecutablePath,
+                Arguments = arguments,
+                UseShellExecute = true,
+                Verb = "runas"
+            };
+
+            try
+            {
+                Process.Start(startInfo);
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                // User canceled UAC prompt
+                MessageBox.Show("This operation requires administrator privileges.",
+                               "Elevation Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }

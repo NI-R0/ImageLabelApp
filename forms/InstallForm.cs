@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -41,23 +42,50 @@ namespace ImageLabelApp.forms
 
             installButton.Click += (s, e) =>
             {
-                LabelDatabase.CreateDatabase();
-                ContextMenuManager.InstallContextMenu();
+                this.Hide();
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = Application.ExecutablePath,
+                    Arguments = "--install-context-menu",
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
 
-                MessageBox.Show("Context menu entries installed.", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Application.Exit();
+                try
+                {
+                    Process.Start(psi);
+                    this.Close();
+                }
+                catch
+                {
+                    this.Show();
+                    MessageBox.Show("Installation canceled.", "Information",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             };
 
             uninstallButton.Click += (s, e) =>
             {
-                ShortcutManager.RemoveLabelFolders();
-                LabelDatabase.DeleteDatabase();
-                ContextMenuManager.UninstallContextMenu();
+                this.Hide();
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = Application.ExecutablePath,
+                    Arguments = "--uninstall-context-menu",
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
 
-                MessageBox.Show("Context menu entries removed.", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                Application.Exit();
+                try
+                {
+                    Process.Start(psi);
+                    this.Close();
+                }
+                catch
+                {
+                    this.Show();
+                    MessageBox.Show("Uninstallation canceled.", "Information",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
             };
 
             // Add controls to form
