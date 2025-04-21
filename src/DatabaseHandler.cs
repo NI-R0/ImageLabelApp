@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ImageLabelApp
 {
-    public static class LabelDatabase
+    public static class DatabaseHandler
     {
         // Labels (LabelName)
         // ImageLabels (ImagePath, LabelName)
@@ -20,7 +21,7 @@ namespace ImageLabelApp
         );
         private static readonly string dbPath = Path.Combine(dbFolder, "labels.db");
 
-        static LabelDatabase()
+        static DatabaseHandler()
         {
             EnsureDatabaseInitialized();
         }
@@ -48,7 +49,7 @@ namespace ImageLabelApp
 
                     // Create a table for unique labels
                     using (var cmd = new SQLiteCommand(
-                        "CREATE TABLE IF NOT EXISTS Labels (LabelName TEXT PRIMARY KEY )", conn))
+                        "CREATE TABLE IF NOT EXISTS Labels (LabelName TEXT PRIMARY KEY)", conn))
                     {
                         cmd.ExecuteNonQuery();
                     }
@@ -61,11 +62,18 @@ namespace ImageLabelApp
                     {
                         cmd.ExecuteNonQuery();
                     }
+
+                    // Create a table for (future) app settings
+                    using (var cmd = new SQLiteCommand(
+                        "CREATE TABLE IF NOT EXISTS AppSettings (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT UNIQUE, Value TEXT)", conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("EnsureDatabaseInitialized - " + ex.Message);
                 Console.WriteLine("Failed to initialize label database: " + ex.Message);
                 throw;
             }
@@ -188,6 +196,61 @@ namespace ImageLabelApp
                 }
             }
             return (labels.Count > 0);
+        }
+
+        public static void SetShortcutFolder(string folderPath)
+        {
+            EnsureDatabaseInitialized();
+            try
+            {
+                using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+                {
+                    conn.Open();
+                    using (var cmd = new SQLiteCommand("INSERT OR REPLACE INTO AppSettings (Name, Value) VALUES (@n, @v)", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@n", "ShortcutFolder");
+                        cmd.Parameters.AddWithValue("@v", folderPath);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("SetShortcutFolder - " + ex.Message);
+            }
+        }
+
+        public static string GetShortcutFolder()
+        {
+            EnsureDatabaseInitialized();
+            string path = "";
+            try
+            {
+                using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+                {
+                    conn.Open();
+                    using (var cmd = new SQLiteCommand("SELECT Value FROM AppSettings WHERE Name = @n", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@n", "ShortcutFolder");
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                path = reader.GetString(0);
+                            }
+                        }
+                    }
+                    if (path == "")
+                    {
+                        throw new Exception("Shortcut folder path could not be retrieved from database!");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, $"ShortcutFolderPath: {path}");
+            }
+            return path;
         }
 
         public static void DeleteDatabase()
