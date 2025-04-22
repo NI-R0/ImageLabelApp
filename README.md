@@ -17,8 +17,7 @@ A lightweight Windows application that allows you to **label images via the righ
 ## 🚀 Quick Start
 
 ### 1. **Installation**
-- Clone the repository and build the project using Visual Studio.
-- Place the compiled `.exe` and required `.dll`s in a folder.
+- Download the release ZIP and unzip into an installation folder.
 - Run the `.exe` (you'll need administrator rights) click on `install`. After right-clicking any image you should now see the menu options `Add Label` and `Remove Label`.
 
 ### 2. **Usage**
@@ -26,4 +25,4 @@ A lightweight Windows application that allows you to **label images via the righ
   **NOTE:** Doing this for the first time will create the database file under `%APPDATA%\Roaming\ImageLabelApp\labels.db` as well as the label folders under `%USER%\Pictures\Labels\`.
 
 ### 3. Uninstall
-- Run the `.exe` and click on `uninstall`. This will take care of removing the label folders as well as the database folder.
+- Run the `.exe` and click on `uninstall`. This will take care of removing the label folders, the database folder, as well as the context menu entries.
