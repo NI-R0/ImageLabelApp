@@ -1,0 +1,42 @@
+﻿
+#imageGallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: left;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.img-caption {
+    color: var(--text-color);
+}
+
+.gallery-image {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+    margin-bottom: 10px;
+}
+
+    .gallery-image:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+    }
+
+.small {
+    width: 100px;
+}
+
+.medium {
+    width: 200px;
+}
+
+.large {
+    width: 300px;
+}

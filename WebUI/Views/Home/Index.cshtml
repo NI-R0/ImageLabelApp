@@ -35,12 +35,16 @@
     </div>
 
     <div id="imageGallery">
-        @foreach (var img in Model)
+        @for (var i = 0; i <= 4; i++)
+        {
+            @foreach (var img in Model)
         {
             <div class="">
                 <img class="gallery-image medium" src="@Url.Action("GetImage", "Home", new { imageHash = img.ImageHash })" alt="@img.OriginalFileName">
-                <p class="mt-2 text-center">@img.OriginalFileName</p>
+                <p class="mt-2 text-center img-caption">@img.OriginalFileName</p>
             </div>
         }
+        }
+        
     </div>
 </div>

@@ -13,10 +13,70 @@ html {
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+/* CUSTOM CSS */
+
+* {
+    --nav-bg-color: #0d1b2a;
+    --main-bg-color: #1b263b;
+    --text-color: #e0e1dd;
+    --fullwidth-padding: 0 5%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    /*font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--main-bg-color);
+}
+
+    body .container {
+        margin: 0;
+        padding: var(--fullwidth-padding);
+        width: 100%;
+        min-width: 100%;
+    }
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+header, header .navbar {
+    background-color: var(--nav-bg-color);
+}
+    header .navbar {
+        padding: var(--fullwidth-padding);
+        padding-top: 1.5em;
+        padding-bottom: 1em;
+    }
+    header .navbar h2 a:hover{
+        color: var(--text-color);
+    }
+
+footer, footer .container {
+    background-color: var(--nav-bg-color);
+}
+    footer .container {
+        padding: var(--fullwidth-padding);
+        min-width: inherit;
+        width: inherit;
+        display: flex;
+        justify-content: center;
+        padding: 1em 0;
+    }
+
+
+/* MAIN BODY STYLES */
+
+body .container * {
+    border: 1px solid darkred;
 }
