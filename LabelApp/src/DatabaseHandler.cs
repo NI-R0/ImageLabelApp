@@ -4,9 +4,12 @@ using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LabelApp
 {
@@ -54,10 +57,24 @@ namespace LabelApp
                         cmd.ExecuteNonQuery();
                     }
 
+                    // Create a table to store labeled images
+                    using (var cmd = new SQLiteCommand(
+                        "CREATE TABLE IF NOT EXISTS Images(" +
+                        "Id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "ImageHash TEXT UNIQUE, " +
+                        "PathHash TEXT UNIQUE, " +
+                        "OriginalFileName TEXT, " +
+                        "OriginalFullPath TEXT, " +
+                        "AddedDate DATETIME", conn))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+
                     // Create a table for image-label associations
                     using (var cmd = new SQLiteCommand(
-                        "CREATE TABLE IF NOT EXISTS ImageLabels (ImagePath TEXT, LabelName TEXT, " +
-                        "PRIMARY KEY (ImagePath, LabelName), " +
+                        "CREATE TABLE IF NOT EXISTS ImageLabels (ImageHash TEXT, LabelName TEXT, " +
+                        "PRIMARY KEY (ImageHash, LabelName), " +
+                        "FOREIGN KEY (ImageHash) REFERENCES Images(ImageHash)), " +
                         "FOREIGN KEY (LabelName) REFERENCES Labels(LabelName))", conn))
                     {
                         cmd.ExecuteNonQuery();
@@ -144,6 +161,25 @@ namespace LabelApp
             }
         }
 
+        public static void AddImage(string imagePath)
+        {
+            string hash = ConvertPathToHash(imagePath);
+
+            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                conn.Open();
+                using (var cmd = new SQLiteCommand("INSERT OR IGNORE INTO Images (ImageHash, PathHash, OriginalFileName, OriginalFullPath, AddedDate) VALUES (@image, @hash, @name, @path, @date)", conn))
+                {
+                    cmd.Parameters.AddWithValue("@image", ConvertImageToHash(imagePath));
+                    cmd.Parameters.AddWithValue("@hash", ConvertPathToHash(imagePath));
+                    cmd.Parameters.AddWithValue("@name", Path.GetFileName(imagePath));
+                    cmd.Parameters.AddWithValue("@path", imagePath);
+                    cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public static void AddLabelToImage(string imagePath, string labelName)
         {
             // Add entry into ImageLabels
@@ -151,9 +187,9 @@ namespace LabelApp
             using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
             {
                 conn.Open();
-                using (var cmd = new SQLiteCommand("INSERT OR REPLACE INTO ImageLabels (ImagePath, LabelName) VALUES (@p, @l)", conn))
+                using (var cmd = new SQLiteCommand("INSERT OR IGNORE INTO ImageLabels (ImageHash, LabelName) VALUES (@h, @l)", conn))
                 {
-                    cmd.Parameters.AddWithValue("@p", imagePath);
+                    cmd.Parameters.AddWithValue("@h", ConvertImageToHash(imagePath));
                     cmd.Parameters.AddWithValue("@l", labelName);
                     cmd.ExecuteNonQuery();
                 }
@@ -167,9 +203,9 @@ namespace LabelApp
             using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
             {
                 conn.Open();
-                using (var cmd = new SQLiteCommand("DELETE FROM ImageLabels WHERE ImagePath = @p AND LabelName = @l", conn))
+                using (var cmd = new SQLiteCommand("DELETE FROM ImageLabels WHERE ImageHash = @h AND LabelName = @l", conn))
                 {
-                    cmd.Parameters.AddWithValue("@p", imagePath);
+                    cmd.Parameters.AddWithValue("@h", ConvertImageToHash(imagePath));
                     cmd.Parameters.AddWithValue("@l", labelName);
                     cmd.ExecuteNonQuery();
                 }
@@ -261,5 +297,34 @@ namespace LabelApp
             }
         }
 
+        private static string ConvertImageToHash(string imagePath)
+        {
+            byte[] fileBytes = File.ReadAllBytes(imagePath);
+            return CalculateSHA256Hash(fileBytes);
+        }
+
+        public static string ConvertPathToHash(string imagePath)
+        {
+            byte[] stringBytes = Encoding.ASCII.GetBytes(imagePath);
+            return CalculateMD5Hash(stringBytes);
+        }
+
+        private static string CalculateSHA256Hash(byte[] bytes)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hashBytes = sha256.ComputeHash(bytes);
+                return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+            }
+        }
+
+        private static string CalculateMD5Hash(byte[] bytes)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var hashBytes = md5.ComputeHash(bytes);
+                return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+            }
+        }
     }
 }

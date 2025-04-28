@@ -20,7 +20,7 @@ namespace LabelApp
                 Directory.CreateDirectory(labelFolder);
             }
 
-            string destinationPath = Path.Combine(labelFolder, Path.GetFileName(imagePath));
+            string destinationPath = Path.Combine(labelFolder, DatabaseHandler.ConvertPathToHash(imagePath));
 
             if (!File.Exists(destinationPath))
             {
@@ -37,7 +37,7 @@ namespace LabelApp
                 return; 
             }
 
-            string copyPath = Path.Combine(labelFolder, Path.GetFileName(imagePath));
+            string copyPath = Path.Combine(labelFolder, DatabaseHandler.ConvertPathToHash(imagePath));
 
             if (File.Exists(copyPath))
             {
