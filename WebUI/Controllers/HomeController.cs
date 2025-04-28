@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebUI.Models;
 
 public class HomeController : Controller
@@ -16,11 +17,14 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult CopyImages(List<string> selectedLabels)
+    public void CopyImages(List<string> selectedLabels)
     {
         var images = GetImages(selectedLabels);
 
-        var targetFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "LabelApp_Copy");
+        var folderName = string.Join("-", selectedLabels);
+
+        var targetFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "ImageLabelApp");
+        targetFolder = Path.Combine(targetFolder, folderName);
         Directory.CreateDirectory(targetFolder);
 
         foreach (var img in images)
@@ -33,8 +37,6 @@ public class HomeController : Controller
 
             System.IO.File.Copy(originalPath, destinationPath, overwrite: true);
         }
-
-        return RedirectToAction("Index");
     }
 
     public IActionResult GetImage(string imageHash)
@@ -159,6 +161,7 @@ public class HomeController : Controller
         }
         return labels;
     }
+
 }
 
 

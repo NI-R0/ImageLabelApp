@@ -10,11 +10,12 @@
 .filter-form {
     display: flex;
     flex-wrap: wrap; /* allow wrapping when needed */
-    gap: 1rem;
+    gap: 1.5rem;
     align-items: center;
 }
 
 .filter-checkbox {
+    font-size: 1.2em;
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;

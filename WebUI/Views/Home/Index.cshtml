@@ -29,15 +29,12 @@
 <hr class="separator" />
 
 <div id="imageGallery" class="image-gallery">
-    @for (var i = 0; i <= 4; i++)
+    @foreach (var img in Model)
     {
-        @foreach (var img in Model)
-        {
-            <div class="img-container">
-                <img class="gallery-image" src="@Url.Action("GetImage", "Home", new { imageHash = img.ImageHash })" alt="@img.OriginalFileName" onclick="openOverlay(this)">
-                <p class="mt-2 text-center img-caption">@img.OriginalFileName</p>
-            </div>
-        }
+        <div class="img-container">
+            <img class="gallery-image" src="@Url.Action("GetImage", "Home", new { imageHash = img.ImageHash })" alt="@img.OriginalFileName" onclick="openOverlay(this)">
+            <p class="mt-2 text-center img-caption">@img.OriginalFileName</p>
+        </div>
     }
 </div>
 
