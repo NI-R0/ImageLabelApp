@@ -65,7 +65,7 @@ namespace LabelApp
                         "PathHash TEXT UNIQUE, " +
                         "OriginalFileName TEXT, " +
                         "OriginalFullPath TEXT, " +
-                        "AddedDate DATETIME", conn))
+                        "AddedDate DATETIME)", conn))
                     {
                         cmd.ExecuteNonQuery();
                     }
@@ -74,7 +74,7 @@ namespace LabelApp
                     using (var cmd = new SQLiteCommand(
                         "CREATE TABLE IF NOT EXISTS ImageLabels (ImageHash TEXT, LabelName TEXT, " +
                         "PRIMARY KEY (ImageHash, LabelName), " +
-                        "FOREIGN KEY (ImageHash) REFERENCES Images(ImageHash)), " +
+                        "FOREIGN KEY (ImageHash) REFERENCES Images(ImageHash), " +
                         "FOREIGN KEY (LabelName) REFERENCES Labels(LabelName))", conn))
                     {
                         cmd.ExecuteNonQuery();
@@ -192,6 +192,38 @@ namespace LabelApp
                     cmd.Parameters.AddWithValue("@h", ConvertImageToHash(imagePath));
                     cmd.Parameters.AddWithValue("@l", labelName);
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void RemoveImage(string imagePath)
+        {
+            EnsureDatabaseInitialized();
+            string hash = ConvertImageToHash(imagePath);
+
+            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                conn.Open();
+                int count = 0;
+                using (var cmd = new SQLiteCommand("SELECT COUNT(*) FROM ImageLabels WHERE ImageHash = @hash", conn))
+                {
+                    cmd.Parameters.AddWithValue("@hash", hash);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            count = reader.GetInt32(0);
+                        }
+                    }
+                }
+
+                if (count <= 0)
+                {
+                    using (var cmd = new SQLiteCommand("DELETE FROM Images WHERE ImageHash = @hash", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@hash", hash);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
         }

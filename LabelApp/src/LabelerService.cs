@@ -11,6 +11,7 @@ namespace LabelApp
     {
         public static void LabelImage(string imagePath, string label)
         {
+            DatabaseHandler.AddImage(imagePath);
             DatabaseHandler.AddLabelToImage(imagePath, label);
             ShortcutManager.CreateShortcut(imagePath, label);
         }
@@ -19,6 +20,7 @@ namespace LabelApp
         {
             DatabaseHandler.RemoveLabelFromImage(imagePath, label);
             ShortcutManager.RemoveShortcut(imagePath, label);
+            DatabaseHandler.RemoveImage(imagePath);
         }
     }
 }
