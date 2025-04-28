@@ -8,51 +8,40 @@
     ViewData["Title"] = "ImageLabelApp";
 }
 
-<div class="settings-wrapper mb-4">
-    <button class="settings-toggle" onclick="toggleSettings()">⚙️ Settings</button>
+<div class="controls-container">
+    <form method="get" action="/" class="filter-form">
+        @foreach (var label in ViewBag.AvailableLabels as List<string>)
+        {
+            <label class="filter-checkbox">
+                <input type="checkbox" name="selectedLabels" value="@label" onchange="this.form.submit()" @(Request.Query["selectedLabels"].Contains(label) ? "checked" : "") /> @label
+            </label>
+        }
+    </form>
 
-    <div id="settingsPanel" class="settings-panel">
-        <div class="filter-section">
-            <form method="get" action="/" id="filterForm" class="filter-form">
-                <h3>Filters</h3>
-                <div class="filter-options">
-                    @foreach (var label in ViewBag.AvailableLabels as List<string>)
-                    {
-                        <label class="filter-checkbox">
-                            <input type="checkbox" name="selectedLabels" value="@label" onchange="this.form.submit()" @(Request.Query["selectedLabels"].Contains(label) ? "checked" : "") />
-                            @label
-                        </label>
-                    }
-                </div>
-            </form>
-
-            <form method="post" asp-action="CopyImages" class="mt-4">
-                <input type="hidden" name="selectedLabels" value="@string.Join(",", Request.Query["selectedLabels"])">
-                <button type="submit" class="copy-button">
-                    Create Local Copy
-                </button>
-            </form>
-        </div>
-
-        <div class="slider-section">
-            <h3>Image Size</h3>
-            <input type="range" id="sizeSlider" min="100" max="400" value="250" oninput="updateImageSize(this.value)">
-        </div>
-    </div>
+    <form method="post" asp-action="CopyImages" class="copy-form">
+        <input type="hidden" name="selectedLabels" value="@string.Join(",", Request.Query["selectedLabels"])">
+        <button type="submit" class="copy-button">
+            Create Local Copy
+        </button>
+    </form>
 </div>
 
-<div class="container">
-    <div id="imageGallery">
-        @for (var i = 0; i <= 4; i++)
-        {
-            @foreach (var img in Model)
+<hr class="separator" />
+
+<div id="imageGallery" class="image-gallery">
+    @for (var i = 0; i <= 4; i++)
+    {
+        @foreach (var img in Model)
         {
             <div class="img-container">
-                <img class="gallery-image medium" src="@Url.Action("GetImage", "Home", new { imageHash = img.ImageHash })" alt="@img.OriginalFileName">
+                <img class="gallery-image" src="@Url.Action("GetImage", "Home", new { imageHash = img.ImageHash })" alt="@img.OriginalFileName" onclick="openOverlay(this)">
                 <p class="mt-2 text-center img-caption">@img.OriginalFileName</p>
             </div>
         }
-        }
-        
-    </div>
+    }
+</div>
+
+<div id="imageOverlay" class="overlay" style="display:none;">
+    <span class="close-button" onclick="closeOverlay()">✖</span>
+    <img id="overlayImage" class="overlay-image" src="" alt="Full View">
 </div>

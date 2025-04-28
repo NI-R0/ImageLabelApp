@@ -12,10 +12,13 @@
 </head>
 <body class="flex-col min-h-screen">
     <header class="border-top border-bottom">
-        <nav class="navbar navbar-expand-sm">
-            <h2>
-                <a class="text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">Image Label Manager</a>
-            </h2>
+        <nav class="navbar navbar-expand-sm justify-content-between ">
+            <h3>
+                <a class="text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">Image Label Viewer</a>
+            </h3>
+            <div class="slider-container">
+                <input type="range" id="sizeSlider" min="50" max="800" value="250" step="1" oninput="updateImageSize(this.value)">
+            </div>
         </nav>
     </header>
 
