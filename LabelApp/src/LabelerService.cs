@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ImageLabelApp
+namespace LabelApp
 {
     public static class LabelerService
     {

@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace ImageLabelApp.forms
+namespace LabelApp.forms
 {
     public class LabelManagerForm : Form
     {

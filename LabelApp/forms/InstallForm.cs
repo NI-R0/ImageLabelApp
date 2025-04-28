@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace ImageLabelApp.forms
+namespace LabelApp.forms
 {
     public class InstallForm : Form
     {

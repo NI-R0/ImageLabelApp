@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace ImageLabelApp
+namespace LabelApp
 {
     public static class ContextMenuManager
     {

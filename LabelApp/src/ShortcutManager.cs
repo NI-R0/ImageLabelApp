@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ImageLabelApp
+namespace LabelApp
 {
     public static class ShortcutManager
     {
