@@ -88,9 +88,9 @@ body .container {
     flex: 1 0 auto;
 }
 
-body .container * {
+/*body .container * {
     border: 1px solid darkred;
-}
+}*/
 
 .content-wrapper {
     width: 100%;

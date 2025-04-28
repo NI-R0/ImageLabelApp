@@ -8,34 +8,42 @@
     ViewData["Title"] = "ImageLabelApp";
 }
 
-<form method="get" action="/">
-    <div id="filters">
-        <h3>Filters</h3>
-        @foreach (var label in ViewBag.AvailableLabels as List<string>)
-        {
-            <label>
-                <input type="checkbox" name="selectedLabels" value="@label" onchange="this.form.submit()" @(Request.Query["selectedLabels"].Contains(label) ? "checked" : "") /> @label
-            </label>
-        }
-    </div>
-</form>
+<div class="settings-wrapper mb-4">
+    <button class="settings-toggle" onclick="toggleSettings()">⚙️ Settings</button>
 
-<form method="post" asp-action="CopyImages" class="mt-4">
-    <input type="hidden" name="selectedLabels" value="@string.Join(",", Request.Query["selectedLabels"])">
-    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-        Create Local Copy
-    </button>
-</form>
+    <div id="settingsPanel" class="settings-panel">
+        <div class="filter-section">
+            <form method="get" action="/" id="filterForm" class="filter-form">
+                <h3>Filters</h3>
+                <div class="filter-options">
+                    @foreach (var label in ViewBag.AvailableLabels as List<string>)
+                    {
+                        <label class="filter-checkbox">
+                            <input type="checkbox" name="selectedLabels" value="@label" onchange="this.form.submit()" @(Request.Query["selectedLabels"].Contains(label) ? "checked" : "") />
+                            @label
+                        </label>
+                    }
+                </div>
+            </form>
+
+            <form method="post" asp-action="CopyImages" class="mt-4">
+                <input type="hidden" name="selectedLabels" value="@string.Join(",", Request.Query["selectedLabels"])">
+                <button type="submit" class="copy-button">
+                    Create Local Copy
+                </button>
+            </form>
+        </div>
+
+        <div class="slider-section">
+            <h3>Image Size</h3>
+            <input type="range" id="sizeSlider" min="100" max="400" value="250" oninput="updateImageSize(this.value)">
+        </div>
+    </div>
+</div>
 
 <div class="container">
-    <div>
-        <button onclick="setImageSize('small')">Small</button>
-        <button onclick="setImageSize('medium')">Medium</button>
-        <button onclick="setImageSize('large')">Large</button>
-    </div>
-
     <div id="imageGallery">
-        @for (var i = 0; i <= 0; i++)
+        @for (var i = 0; i <= 4; i++)
         {
             @foreach (var img in Model)
         {

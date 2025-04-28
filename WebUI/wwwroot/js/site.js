@@ -10,3 +10,20 @@ function setImageSize(size) {
     img.classList.add(size);
     });
 }
+
+
+//function updateImageSize(value) {
+//    const images = document.querySelectorAll('.gallery-image');
+//    images.forEach(img => {
+//        img.style.maxWidth = value + 'px';
+//    });
+//}
+
+function updateImageSize(value) {
+    document.getElementById('imageGallery').style.setProperty('--image-width', value + 'px');
+}
+
+function toggleSettings() {
+    const panel = document.getElementById('settingsPanel');
+    panel.classList.toggle('open');
+}

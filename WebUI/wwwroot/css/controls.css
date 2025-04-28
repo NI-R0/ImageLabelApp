@@ -1,0 +1,146 @@
+﻿/* SETTINGS MENU */
+.settings-wrapper {
+    margin-bottom: 2rem;
+}
+
+.settings-toggle {
+    background-color: var(--nav-bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.2s;
+}
+
+    .settings-toggle:hover {
+        background-color: #324b70;
+    }
+
+.settings-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, padding 0.3s ease;
+    background-color: var(--main-bg-color);
+    border: 1px solid var(--text-color);
+    border-radius: 8px;
+    padding: 0 1.5rem;
+    gap: 2rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+    .settings-panel.open {
+        max-height: 800px; /* enough space to unfold */
+        padding: 1.5rem;
+        display: flex;
+    }
+
+    /* Settings panel layout */
+    .settings-panel form,
+    .settings-panel .slider-section {
+        flex: 1;
+        min-width: 300px;
+    }
+
+.settings-panel {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* CONTROLS SECTION */
+.settingsPanel {
+    background-color: var(--main-bg-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+    .settingsPanel h4 {
+        color: var(--text-color);
+        margin-bottom: 1rem;
+    }
+
+.filter-form {
+    margin-bottom: 1rem;
+}
+
+.filter-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.filter-checkbox {
+    background-color: var(--main-bg-color);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--text-color);
+    border-radius: 8px;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+    .filter-checkbox:hover {
+        background-color: #324b70;
+    }
+
+.copy-button {
+    background-color: #198754;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+    .copy-button:hover {
+        background-color: #157347;
+    }
+
+/* RANGE SLIDER */
+input[type="range"] {
+    width: 100%;
+    margin-top: 1rem;
+    -webkit-appearance: none;
+    background: transparent;
+}
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #258cfb;
+        cursor: pointer;
+        margin-top: -8px; /* align thumb properly */
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        background: var(--text-color);
+        border-radius: 4px;
+    }
+
+    /* For Firefox */
+    input[type="range"]::-moz-range-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: #258cfb;
+        cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-track {
+        width: 100%;
+        height: 4px;
+        background: var(--text-color);
+        border-radius: 4px;
+    }
