@@ -10,6 +10,7 @@ public class HomeController : Controller
 
     public IActionResult Index(List<string> selectedLabels)
     {
+        ViewBag.AvailableLabels = GetAllLabels();
         var images = GetImages(selectedLabels);
         return View(images);
     }
@@ -125,6 +126,7 @@ public class HomeController : Controller
         switch (extension.ToLowerInvariant())
         {
             case ".jpg":
+                return "image/jpg";
             case ".jpeg":
                 return "image/jpeg";
             case ".png":
@@ -136,6 +138,26 @@ public class HomeController : Controller
             default:
                 return "application/octet-stream";
         }
+    }
+
+    private List<string> GetAllLabels()
+    {
+        var labels = new List<string>();
+        using (var conn = new SqliteConnection($"Data Source={dbPath}"))
+        {
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT DISTINCT LabelName FROM Labels";
+
+            using (var reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    labels.Add(reader.GetString(0));
+                }
+            }
+        }
+        return labels;
     }
 }
 

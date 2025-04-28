@@ -1,44 +1,46 @@
-﻿@model List<ImageLabel>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
-<!DOCTYPE html>
-<html lang="en" class="dark">
-<head>
-    <meta charset="utf-8" />
-    <title>Image Label Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-900 text-white">
-    <div class="container mx-auto p-4">
-        <h1 class="text-3xl font-bold mb-6">Image Label Manager</h1>
+@model List<ImageLabel>
 
-        <form method="get" asp-action="Index">
-            <div class="flex flex-wrap gap-4 mb-4">
-                @* You need to dynamically generate label filters here *@
-                <input type="checkbox" name="selectedLabels" value="Favourites"> Favourites
-                <input type="checkbox" name="selectedLabels" value="Me"> Me
-            </div>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Filter
-            </button>
-        </form>
+@{
+    Layout = "_Layout";
+    var Request = HttpContextAccessor.HttpContext.Request;
+    ViewData["Title"] = "ImageLabelApp";
+}
 
-        @* <form method="post" asp-action="CopyImages" class="mt-4">
-            <input type="hidden" name="selectedLabels" value="@string.Join(",", Request.Query["selectedLabels"])">
-            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                Create Local Copy
-            </button>
-        </form> *@
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            @foreach (var img in Model)
-            {
-                <div class="border border-gray-700 rounded p-2">
-                    <img src="@Url.Action("GetImage", "Home", new { imageHash = img.ImageHash })" alt="@img.OriginalFileName">
-                    <p class="mt-2 text-center">@img.OriginalFileName</p>
-                </div>
-            }
-        </div>
+<form method="get" action="/">
+    <div id="filters">
+        <h3>Filters</h3>
+        @foreach (var label in ViewBag.AvailableLabels as List<string>)
+        {
+            <label>
+                <input type="checkbox" name="selectedLabels" value="@label" onchange="this.form.submit()" @(Request.Query["selectedLabels"].Contains(label) ? "checked" : "") /> @label
+            </label>
+        }
     </div>
-</body>
-</html>
+</form>
 
+<form method="post" asp-action="CopyImages" class="mt-4">
+    <input type="hidden" name="selectedLabels" value="@string.Join(",", Request.Query["selectedLabels"])">
+    <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+        Create Local Copy
+    </button>
+</form>
+
+<div class="container">
+    <div>
+        <button onclick="setImageSize('small')">Small</button>
+        <button onclick="setImageSize('medium')">Medium</button>
+        <button onclick="setImageSize('large')">Large</button>
+    </div>
+
+    <div id="imageGallery">
+        @foreach (var img in Model)
+        {
+            <div class="">
+                <img class="gallery-image medium" src="@Url.Action("GetImage", "Home", new { imageHash = img.ImageHash })" alt="@img.OriginalFileName">
+                <p class="mt-2 text-center">@img.OriginalFileName</p>
+            </div>
+        }
+    </div>
+</div>
