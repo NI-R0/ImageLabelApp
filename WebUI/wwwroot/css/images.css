@@ -1,0 +1,39 @@
+﻿
+#imageGallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    gap: 2rem; /* Space between images */
+    width: 100%;
+    overflow: visible;
+    padding-bottom: 5rem;
+}
+
+    #imageGallery .img-container {
+        flex: 0 1 auto; /* Allow flexible width */
+        max-width: 80%;
+        box-sizing: border-box;
+        text-align: center;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    #imageGallery .img-caption {
+        color: var(--text-color);
+    }
+
+
+
+.gallery-image {
+    height: auto;
+    width: 100%;
+    width: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+    .gallery-image:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
+        z-index: 10;
+    }

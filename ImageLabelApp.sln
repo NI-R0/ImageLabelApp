@@ -3,7 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageLabelApp", "ImageLabelApp.csproj", "{D597787A-AE16-43AA-A304-DE0EAD6DD032}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabelApp", "LabelApp\LabelApp.csproj", "{D597787A-AE16-43AA-A304-DE0EAD6DD032}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		packages.config = packages.config
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUI", "WebUI\WebUI.csproj", "{72BBD93A-93A5-4130-A99F-6A9183EF02E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +24,10 @@ Global
 		{D597787A-AE16-43AA-A304-DE0EAD6DD032}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D597787A-AE16-43AA-A304-DE0EAD6DD032}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D597787A-AE16-43AA-A304-DE0EAD6DD032}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72BBD93A-93A5-4130-A99F-6A9183EF02E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72BBD93A-93A5-4130-A99F-6A9183EF02E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72BBD93A-93A5-4130-A99F-6A9183EF02E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72BBD93A-93A5-4130-A99F-6A9183EF02E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

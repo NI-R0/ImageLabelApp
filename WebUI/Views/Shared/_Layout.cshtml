@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebUI</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/WebUI.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/images.css"  asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/controls.css" asp-append-version="true"/>
+</head>
+<body class="flex-col min-h-screen">
+    <header class="border-top border-bottom">
+        <nav class="navbar navbar-expand-sm justify-content-between ">
+            <h3>
+                <a class="text-decoration-none" asp-area="" asp-controller="Home" asp-action="Index">Image Label Viewer</a>
+            </h3>
+            <div class="slider-container">
+                <input type="range" id="sizeSlider" min="50" max="800" value="250" step="1" oninput="updateImageSize(this.value)">
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="content-wrapper">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="footer border-top text-muted">
+        <div class="container">
+            &copy; 2025 - Niklas Rodenbüsch - ImageLabelApp WebUI
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

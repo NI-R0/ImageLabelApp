@@ -1,0 +1,131 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* CUSTOM CSS */
+* {
+    --nav-bg-color: #0d1b2a;
+    --main-bg-color: #1b263b;
+    --text-color: #e0e1dd;
+    --fullwidth-padding: 0 5%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background-color: var(--main-bg-color);
+}
+
+    body .container {
+        margin: 0;
+        padding: var(--fullwidth-padding);
+        width: 100%;
+        min-width: 100%;
+    }
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+header, header .navbar {
+    background-color: var(--nav-bg-color);
+}
+    header .navbar {
+        padding: var(--fullwidth-padding);
+        padding-top: 1.5em;
+        padding-bottom: 1em;
+    }
+    header .navbar h2 a:hover{
+        color: var(--text-color);
+    }
+
+/* HEADER */
+.slider-container {
+    width: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+    .slider-container input[type="range"] {
+        width: 100%;
+    }
+
+footer, footer .container {
+    background-color: var(--nav-bg-color);
+}
+    footer .container {
+        padding: var(--fullwidth-padding);
+        min-width: inherit;
+        width: inherit;
+        display: flex;
+        justify-content: left;
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
+
+/* MAIN BODY STYLES */
+body .container {
+    flex: 1 0 auto;
+}
+
+.content-wrapper {
+    width: 100%;
+    min-width: 100%;
+}
+    .content-wrapper .container {
+        padding: 0;
+    }
+
+
+/* OVERLAY STYLES */
+.overlay {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+}
+
+.overlay-image {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+}
