@@ -11,16 +11,23 @@ namespace LabelApp
     {
         public static void LabelImage(string imagePath, string label)
         {
-            DatabaseHandler.AddImage(imagePath);
-            DatabaseHandler.AddLabelToImage(imagePath, label);
-            ShortcutManager.CreateShortcut(imagePath, label);
+            try
+            {
+                CopyManager.CreateCopy(imagePath);
+                DatabaseHandler.AddImage(imagePath);
+                DatabaseHandler.AddLabelToImage(imagePath, label);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
 
         public static void UnlabelImage(string imagePath, string label)
         {
             DatabaseHandler.RemoveLabelFromImage(imagePath, label);
-            ShortcutManager.RemoveShortcut(imagePath, label);
             DatabaseHandler.RemoveImage(imagePath);
+            CopyManager.RemoveCopy(imagePath);
         }
     }
 }

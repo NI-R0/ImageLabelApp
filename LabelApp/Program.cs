@@ -35,7 +35,7 @@ namespace LabelApp
                     }
                     DatabaseHandler.CreateDatabase();
                     ContextMenuManager.InstallContextMenu();
-                    ShortcutManager.CreateShortcutFolder();
+                    CopyManager.CreateCopyFolder();
                     MessageBox.Show("Context menu entries installed.", "Success",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -47,7 +47,7 @@ namespace LabelApp
                         RestartAsAdmin("--uninstall-context-menu");
                         return;
                     }
-                    ShortcutManager.RemoveLabelFolders();
+                    CopyManager.RemoveCopyFolder();
                     DatabaseHandler.DeleteDatabase();
                     ContextMenuManager.UninstallContextMenu();
                     MessageBox.Show("Context menu entries removed.", "Success",
@@ -80,7 +80,7 @@ namespace LabelApp
                 switch (command)
                 {
                     case "add":
-                        if (ShortcutManager.ImageInLabelfolder(imagePath))
+                        if (CopyManager.ImageInCopyfolder(imagePath))
                         {
                             return;
                         }
@@ -89,7 +89,7 @@ namespace LabelApp
                         return;
 
                     case "remove":
-                        if (ShortcutManager.ImageInLabelfolder(imagePath))
+                        if (CopyManager.ImageInCopyfolder(imagePath))
                         {
                             return;
                         }

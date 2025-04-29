@@ -109,7 +109,7 @@
     <Compile Include="src\LabelerService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\ShortcutManager.cs" />
+    <Compile Include="src\CopyManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

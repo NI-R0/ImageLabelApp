@@ -18,11 +18,11 @@ namespace LabelApp
         // Labels (LabelName)
         // ImageLabels (ImagePath, LabelName)
 
-        private static readonly string dbFolder = Path.Combine(
+        private static readonly string appFolder = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "ImageLabelApp"
         );
-        private static readonly string dbPath = Path.Combine(dbFolder, "labels.db");
+        private static readonly string dbPath = Path.Combine(appFolder, "labels.db");
 
         static DatabaseHandler()
         {
@@ -38,9 +38,9 @@ namespace LabelApp
         {
             try
             {
-                if (!Directory.Exists(dbFolder))
+                if (!Directory.Exists(appFolder))
                 {
-                    Directory.CreateDirectory(dbFolder);
+                    Directory.CreateDirectory(appFolder);
                 }
                 if (!File.Exists(dbPath))
                 {
@@ -158,13 +158,49 @@ namespace LabelApp
                     cmd.Parameters.AddWithValue("@l", labelName);
                     cmd.ExecuteNonQuery();
                 }
+
+                DeleteOrphanedImages(conn);
             }
+        }
+
+        private static void DeleteOrphanedImages(SQLiteConnection conn)
+        {
+            using (conn)
+            {
+                List<string> orphanedImages = new List<string>();
+                List<string> orphanedPaths = new List<string>();
+                using (var cmd = new SQLiteCommand(@"
+                                    SELECT ImageHash, OriginalFullPath
+                                    FROM Images 
+                                    WHERE ImageHash NOT IN (SELECT DISTINCT ImageHash FROM ImageLabels)", conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        orphanedImages.Add(reader.GetString(0));
+                        orphanedPaths.Add(reader.GetString(1));
+                    }
+                }
+
+                foreach (var hash in orphanedImages)
+                {
+                    using (var cmd = new SQLiteCommand("DELETE FROM Images WHERE ImageHash = @hash", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@hash", hash);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                foreach (var path in orphanedPaths)
+                {
+                    CopyManager.RemoveCopy(path);
+                }
+            }
+            
         }
 
         public static void AddImage(string imagePath)
         {
-            string hash = ConvertPathToHash(imagePath);
-
             using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
             {
                 conn.Open();
@@ -244,6 +280,28 @@ namespace LabelApp
             }
         }
 
+        public static bool ImageExists(string imagePath)
+        {
+            List<int> ids = new List<int>();
+            EnsureDatabaseInitialized();
+            using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
+            {
+                conn.Open();
+                using (var cmd = new SQLiteCommand("SELECT Id FROM Images WHERE ImageHash = @h", conn))
+                {
+                    cmd.Parameters.AddWithValue("@h", ConvertImageToHash(imagePath));
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ids.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+            }
+            return (ids.Count > 0);
+        }
+
         public static bool LabelExists(string labelName)
         {
             List<string> labels = new List<string>();
@@ -266,70 +324,26 @@ namespace LabelApp
             return (labels.Count > 0);
         }
 
-        public static void SetShortcutFolder(string folderPath)
+
+        public static string GetAppFolder()
         {
-            EnsureDatabaseInitialized();
-            try
-            {
-                using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
-                {
-                    conn.Open();
-                    using (var cmd = new SQLiteCommand("INSERT OR REPLACE INTO AppSettings (Name, Value) VALUES (@n, @v)", conn))
-                    {
-                        cmd.Parameters.AddWithValue("@n", "ShortcutFolder");
-                        cmd.Parameters.AddWithValue("@v", folderPath);
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("SetShortcutFolder - " + ex.Message);
-            }
+            return appFolder;
         }
 
-        public static string GetShortcutFolder()
+        public static string GetCopyFolder()
         {
-            EnsureDatabaseInitialized();
-            string path = "";
-            try
-            {
-                using (var conn = new SQLiteConnection($"Data Source={dbPath}"))
-                {
-                    conn.Open();
-                    using (var cmd = new SQLiteCommand("SELECT Value FROM AppSettings WHERE Name = @n", conn))
-                    {
-                        cmd.Parameters.AddWithValue("@n", "ShortcutFolder");
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                path = reader.GetString(0);
-                            }
-                        }
-                    }
-                    if (path == "")
-                    {
-                        throw new Exception("Shortcut folder path could not be retrieved from database!");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, $"ShortcutFolderPath: {path}");
-            }
-            return path;
+            return Path.Combine(appFolder, "Images");
         }
 
         public static void DeleteDatabase()
         {
-            if (Directory.Exists(dbFolder))
+            if (Directory.Exists(appFolder))
             {
-                Directory.Delete(dbFolder, true);
+                Directory.Delete(appFolder, true);
             }
         }
 
-        private static string ConvertImageToHash(string imagePath)
+        public static string ConvertImageToHash(string imagePath)
         {
             byte[] fileBytes = File.ReadAllBytes(imagePath);
             return CalculateSHA256Hash(fileBytes);

@@ -13,21 +13,17 @@ namespace LabelApp.forms
         private TextBox newLabelTextBox;
         private Button addButton;
         private Button removeButton;
-        private TextBox shortcutPathTextBox;
-        private Button browseButton;
-        private Button savePathButton;
 
         public LabelManagerForm()
         {
             InitializeComponents();
             LoadLabels();
-            LoadShortcutPath();
         }
 
         private void InitializeComponents()
         {
             this.Text = "Label Manager";
-            this.Size = new Size(400, 365);
+            this.Size = new Size(400, 280);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -65,38 +61,6 @@ namespace LabelApp.forms
                 Width = 360,
                 Anchor = AnchorStyles.Left | AnchorStyles.Right
             };
-            Label shortcutPathLabel = new Label
-            {
-                Text = "Shortcuts Folder:",
-                Top = 240,
-                Left = 10,
-                Width = 100,
-                Anchor = AnchorStyles.Left
-            };
-            this.shortcutPathTextBox = new TextBox
-            {
-                Top = 265,
-                Left = 10,
-                Width = 260,
-                Anchor = AnchorStyles.Left | AnchorStyles.Right
-            };
-            this.browseButton = new Button
-            {
-                Text = "Browse",
-                Top = 265,
-                Left = 280,
-                Width = 90,
-                Anchor = AnchorStyles.Right
-            };
-            this.savePathButton = new Button
-            {
-                Text = "Save",
-                Top = 295,
-                Left = 10,
-                Width = 360,
-                Anchor = AnchorStyles.Right
-            };
-
 
             this.addButton.Click += (s, e) =>
             {
@@ -115,78 +79,17 @@ namespace LabelApp.forms
                 if (this.labelListBox.SelectedItem != null)
                 {
                     string labelName = this.labelListBox.SelectedItem.ToString().Trim();
-                    ShortcutManager.RemoveLabelFolder(labelName);
                     ContextMenuManager.RemoveLabelEntries(labelName);
                     DatabaseHandler.DeleteExistingLabel(labelName);
                     this.labelListBox.Items.Remove(this.labelListBox.SelectedItem);
                 }
             };
 
-            this.browseButton.Click += (s, e) =>
-            {
-                try
-                {
-                    using (var folderDialog = new FolderBrowserDialog())
-                    {
-                        folderDialog.Description = "Select Shortcut Folder";
-                        folderDialog.ShowNewFolderButton = true;
-
-                        string currentPath = this.shortcutPathTextBox.Text;
-                        if (!string.IsNullOrEmpty(currentPath) && Directory.Exists(currentPath))
-                        {
-                            folderDialog.SelectedPath = currentPath;
-                        }
-
-                        DialogResult result = folderDialog.ShowDialog(this);
-                        if (result == DialogResult.OK)
-                        {
-                            this.shortcutPathTextBox.Text = folderDialog.SelectedPath;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error browsing for folder: {ex.Message}", "Error",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            };
-
-            this.savePathButton.Click += (s, e) =>
-            {
-                string newPath = this.shortcutPathTextBox.Text.Trim();
-                if (!string.IsNullOrEmpty(newPath))
-                {
-                    if (!Directory.Exists(newPath))
-                    {
-                        Directory.CreateDirectory(newPath);
-                    }
-                    try
-                    {
-                        DatabaseHandler.SetShortcutFolder(newPath);
-                        MessageBox.Show("Shortcut folder path updated successfully.", "Success",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error saving shortcut path: {ex.Message}", "Error",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Please enter a valid folder path.", "Invalid Path",
-                                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            };
 
             this.Controls.Add(this.labelListBox);
             this.Controls.Add(this.newLabelTextBox);
             this.Controls.Add(this.addButton);
             this.Controls.Add(this.removeButton);
-            this.Controls.Add(shortcutPathLabel);
-            this.Controls.Add(this.shortcutPathTextBox);
-            this.Controls.Add(this.browseButton);
-            this.Controls.Add(this.savePathButton);
         }
 
         private void LoadLabels()
@@ -200,20 +103,6 @@ namespace LabelApp.forms
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading labels: {ex.Message}", "Error",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void LoadShortcutPath()
-        {
-            try
-            {
-                string path = DatabaseHandler.GetShortcutFolder();
-                this.shortcutPathTextBox.Text = path;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading shortcut path: {ex.Message}", "Error",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
