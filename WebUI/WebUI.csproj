@@ -15,8 +15,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\LabelApp\LabelApp.csproj" />
-  </ItemGroup>
-
 </Project>

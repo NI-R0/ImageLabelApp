@@ -2,14 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
-using System.Reflection.Emit;
 using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace LabelApp
 {
@@ -90,7 +84,6 @@ namespace LabelApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show("EnsureDatabaseInitialized - " + ex.Message);
                 Console.WriteLine("Failed to initialize label database: " + ex.Message);
                 throw;
             }
@@ -135,7 +128,7 @@ namespace LabelApp
             }
             catch (Exception ex) 
             {
-                MessageBox.Show(ex.Message);
+                Console.WriteLine(ex.Message);
             }
         }
 
