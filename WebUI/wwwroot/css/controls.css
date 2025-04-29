@@ -9,7 +9,7 @@
 
 .filter-form {
     display: flex;
-    flex-wrap: wrap; /* allow wrapping when needed */
+    flex-wrap: wrap;
     gap: 1.5rem;
     align-items: center;
 }
@@ -20,7 +20,7 @@
     align-items: center;
     gap: 0.3rem;
     color: var(--text-color);
-    white-space: nowrap; /* prevent weird line breaks inside labels */
+    white-space: nowrap;
 }
 
 .copy-form .copy-button {

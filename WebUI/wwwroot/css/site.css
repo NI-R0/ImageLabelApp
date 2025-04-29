@@ -12,11 +12,6 @@ html {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-/*html {
-    position: relative;
-    min-height: 100%;
-    overflow-x: hidden;
-}*/
 html, body {
     height: 100%;
     margin: 0;
@@ -25,7 +20,6 @@ html, body {
 }
 
 /* CUSTOM CSS */
-
 * {
     --nav-bg-color: #0d1b2a;
     --main-bg-color: #1b263b;
@@ -36,7 +30,6 @@ html, body {
 * {
     margin: 0;
     padding: 0;
-    /*font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;*/
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -95,14 +88,9 @@ footer, footer .container {
 
 
 /* MAIN BODY STYLES */
-
 body .container {
     flex: 1 0 auto;
 }
-
-/*body .container * {
-    border: 1px solid darkred;
-}*/
 
 .content-wrapper {
     width: 100%;

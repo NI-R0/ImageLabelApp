@@ -16,17 +16,17 @@ function updateImageSize(value) {
     const gallery = document.getElementById('imageGallery');
     const images = document.querySelectorAll('.gallery-image');
     const galleryWidth = gallery.clientWidth;
-    const maxAllowedWidth = galleryWidth * 0.8; // 80% of gallery width
+    const maxAllowedWidth = galleryWidth * 0.8;
 
     let effectiveWidth = Math.min(value, maxAllowedWidth);
 
     images.forEach(img => {
-        img.style.maxWidth = effectiveWidth + 'px'; /* force max width dynamically */
-        img.style.width = effectiveWidth + 'px'; /* and current width too */
+        img.style.maxWidth = effectiveWidth + 'px';
+        img.style.width = effectiveWidth + 'px';
     });
 }
 
-// Attach live input event
+
 document.getElementById('imageSizeSlider').addEventListener('input', (e) => {
     updateImageSize(e.target.value);
 });
