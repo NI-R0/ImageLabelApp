@@ -1,6 +1,12 @@
 using Microsoft.Extensions.Hosting.WindowsServices;
 
-var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder(args);
+
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = AppContext.BaseDirectory
+});
 
 if (WindowsServiceHelpers.IsWindowsService())
 {
@@ -9,7 +15,7 @@ if (WindowsServiceHelpers.IsWindowsService())
 
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.ListenAnyIP(5000);
+    serverOptions.ListenAnyIP(50505);
 });
 
 // Add services to the container.
