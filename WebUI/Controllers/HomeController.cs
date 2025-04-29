@@ -17,26 +17,36 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public void CopyImages(List<string> selectedLabels)
+    public IActionResult CopyImages(List<string> selectedLabels)
     {
-        var images = GetImages(selectedLabels);
+        var labelString = selectedLabels[0];
+        if (String.IsNullOrEmpty(labelString) || String.IsNullOrWhiteSpace(labelString))
+        {
+            return RedirectToAction("Index");
+        }
 
-        var folderName = string.Join("-", selectedLabels);
+        string[] labels = selectedLabels[0].Trim().Split(',');
+        var folderName = string.Join("+", labels);
+        folderName = DateTime.Now.ToString("yyyy/MM/dd") + " " + folderName;
 
         var targetFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "LabelApp");
         targetFolder = Path.Combine(targetFolder, folderName);
         Directory.CreateDirectory(targetFolder);
 
+        var images = GetImages([.. labels]);
+
         foreach (var img in images)
         {
             var origin = GetCopyFolder();
-            var originPath = Path.Combine(origin, img.PathHash, img.Extension);
+            var originPath = Path.Combine(origin, img.PathHash + img.Extension);
 
             var newFileName = img.PathHash + img.Extension; // Use PathHash for filename
             var destinationPath = Path.Combine(targetFolder, newFileName);
 
             System.IO.File.Copy(originPath, destinationPath, overwrite: true);
         }
+
+        return RedirectToAction("Index");
     }
 
     public IActionResult GetImage(string imageHash)

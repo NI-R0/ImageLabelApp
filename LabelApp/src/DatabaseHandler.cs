@@ -317,12 +317,6 @@ namespace LabelApp
             return (labels.Count > 0);
         }
 
-
-        public static string GetAppFolder()
-        {
-            return appFolder;
-        }
-
         public static string GetCopyFolder()
         {
             return Path.Combine(appFolder, "Images");
