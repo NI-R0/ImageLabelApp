@@ -68,94 +68,117 @@ public class HomeController : Controller
 
     private List<string> GetAllLabels()
     {
-        var labels = new List<string>();
-        using (var conn = new SqliteConnection($"Data Source={dbPath}"))
+        try
         {
-            conn.Open();
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT DISTINCT LabelName FROM Labels";
-
-            using (var reader = cmd.ExecuteReader())
+            var labels = new List<string>();
+            using (var conn = new SqliteConnection($"Data Source={dbPath}"))
             {
-                while (reader.Read())
+                conn.Open();
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "SELECT DISTINCT LabelName FROM Labels";
+
+                using (var reader = cmd.ExecuteReader())
                 {
-                    labels.Add(reader.GetString(0));
+                    while (reader.Read())
+                    {
+                        labels.Add(reader.GetString(0));
+                    }
                 }
             }
+            return labels;
         }
-        return labels;
+        catch (Exception ex)
+        {
+            return new List<string>();
+        }
     }
 
 
     private List<ImageLabel> GetImages(List<string> selectedLabels)
     {
-        var images = new List<ImageLabel>();
-
-        using (var conn = new SqliteConnection($"Data Source={dbPath}"))
+        try
         {
-            conn.Open();
-            var cmd = conn.CreateCommand();
+            var images = new List<ImageLabel>();
 
-            if (selectedLabels != null && selectedLabels.Any())
+            using (var conn = new SqliteConnection($"Data Source={dbPath}"))
             {
-                // build where clauses for labels
-                string labelsCondition = string.Join(" INTERSECT ", selectedLabels.Select(label => $@"
+                conn.Open();
+                var cmd = conn.CreateCommand();
+
+                if (selectedLabels != null && selectedLabels.Any())
+                {
+                    // build where clauses for labels
+                    string labelsCondition = string.Join(" INTERSECT ", selectedLabels.Select(label => $@"
                     SELECT ImageHash FROM ImageLabels WHERE LabelName = '{label}'
                 "));
 
-                cmd.CommandText = $@"
+                    cmd.CommandText = $@"
                     SELECT ImageHash, PathHash, OriginalFileName, OriginalFullPath
                     FROM Images
                     WHERE ImageHash IN ({labelsCondition})
                 ";
-            }
-            else
-            {
-                cmd.CommandText = "SELECT ImageHash, PathHash, OriginalFileName, OriginalFullPath FROM Images";
-            }
-
-            using (var reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    images.Add(new ImageLabel
-                    {
-                        ImageHash = reader.GetString(0),
-                        PathHash = reader.GetString(1),
-                        OriginalFileName = reader.GetString(2),
-                        OriginalFullPath = reader.GetString(3)
-                    });
                 }
+                else
+                {
+                    cmd.CommandText = "SELECT ImageHash, PathHash, OriginalFileName, OriginalFullPath FROM Images";
+                }
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        images.Add(new ImageLabel
+                        {
+                            ImageHash = reader.GetString(0),
+                            PathHash = reader.GetString(1),
+                            OriginalFileName = reader.GetString(2),
+                            OriginalFullPath = reader.GetString(3)
+                        });
+                    }
+                }
+
+                return images;
             }
         }
-
-        return images;
+        catch (Exception ex)
+        {
+            return new List<ImageLabel>();
+        }
     }
 
     private (string filePath, string extension) GetFilePath(string imageHash)
     {
-        using (var conn = new SqliteConnection($"Data Source={dbPath}"))
+        try
         {
-            conn.Open();
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT PathHash, OriginalFullPath FROM Images WHERE ImageHash = @hash";
-            cmd.Parameters.AddWithValue("@hash", imageHash);
-
-            using (var reader = cmd.ExecuteReader())
+            using (var conn = new SqliteConnection($"Data Source={dbPath}"))
             {
-                while (reader.Read())
+                conn.Open();
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = "SELECT PathHash, OriginalFullPath FROM Images WHERE ImageHash = @hash";
+                cmd.Parameters.AddWithValue("@hash", imageHash);
+
+                using (var reader = cmd.ExecuteReader())
                 {
-                    string result = reader.GetString(0);
-                    string extension = Path.GetExtension(reader.GetString(1));
-                    if (result != null)
+                    while (reader.Read())
                     {
-                        return (Path.Combine(GetCopyFolder(), result), extension);
+                        string result = reader.GetString(0);
+                        string extension = Path.GetExtension(reader.GetString(1));
+                        if (result != null)
+                        {
+                            return (Path.Combine(GetCopyFolder(), result), extension);
+                        }
                     }
                 }
             }
+            (string filePath, string extension) value = (null, null);
+            return value;
         }
-        (string filePath, string extension) value = (null, null);
-        return value;
+        catch (Exception ex)
+        {
+            (string filePath, string extension) value = (null, null);
+            return value;
+        }
+        
     }
 
     private string GetContentType(string extension)
