@@ -1,4 +1,11 @@
+using Microsoft.Extensions.Hosting.WindowsServices;
+
 var builder = WebApplication.CreateBuilder(args);
+
+if (WindowsServiceHelpers.IsWindowsService())
+{
+    builder.Host.UseWindowsService();
+}
 
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
